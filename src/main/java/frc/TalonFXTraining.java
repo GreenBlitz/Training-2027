@@ -2,11 +2,13 @@ package frc;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
+import org.littletonrobotics.junction.Logger;
 
 
 public class TalonFXTraining {
@@ -15,6 +17,10 @@ public class TalonFXTraining {
 
 	public TalonFXTraining(int deviceId, CANBus canBus) {
 		this.motor = new TalonFX(deviceId, canBus);
+        SoftwareLimitSwitchConfigs slsc = new SoftwareLimitSwitchConfigs();
+        slsc.ForwardSoftLimitEnable=true;
+        slsc.ForwardSoftLimitThreshold=360*5;
+        motor.getConfigurator().apply(slsc);
 	}
 
 	private void setPower(double amount) {
@@ -48,5 +54,14 @@ public class TalonFXTraining {
 	public StatusSignal<Current> getCurrent() {
 		return motor.getStatorCurrent();
 	}
+
+    private static final String logPath="/home/linus/roboticsLog";
+
+    public void logAll(){
+        Logger.recordOutput(logPath+"/position",getPosition().getValue());
+        Logger.recordOutput(logPath+"/velocity",getVelocity().getValue());
+        Logger.recordOutput(logPath+"/voltage",getVoltage().getValue());
+        Logger.recordOutput(logPath+"/current",getCurrent().getValue());
+    }
 
 }
