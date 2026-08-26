@@ -65,7 +65,7 @@ public class Robot {
 			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
-		this.talonFX = new TalonFXTraining(3,new CANBus("rio"),"/motor");
+		this.talonFX = new TalonFXTraining(21,new CANBus("rio"),"/motor");
 
 		this.limelights = List.of();
 		limelights.forEach(

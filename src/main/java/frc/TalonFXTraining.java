@@ -30,15 +30,17 @@ public class TalonFXTraining {
 		SoftwareLimitSwitchConfigs slsc = new SoftwareLimitSwitchConfigs();
 		/* tasks 5 and 7 */
 		slsc.ForwardSoftLimitEnable = true;
-		slsc.ForwardSoftLimitThreshold = 360 * 5;
+		slsc.ForwardSoftLimitThreshold = 5;
 		slsc.ReverseSoftLimitEnable = true;
-		slsc.ReverseSoftLimitThreshold = 360 * 3;
+		slsc.ReverseSoftLimitThreshold = -3;
 		motor.getConfigurator().apply(slsc);
 		/* task 9 */
 		CurrentLimitsConfigs clc = new CurrentLimitsConfigs();
-		//clc.StatorCurrentLimitEnable = true;
-		//clc.StatorCurrentLimit = 40;
-		//motor.getConfigurator().apply(clc);
+        //clc.StatorCurrentLimitEnable = false;
+        clc.StatorCurrentLimitEnable = true;
+        clc.SupplyCurrentLowerLimit = 5;
+		clc.StatorCurrentLimit = 40;
+		motor.getConfigurator().apply(clc);
 		/* task 8 */
 		MotorOutputConfigs moc = new MotorOutputConfigs().withInverted(direction);
 		motor.getConfigurator().apply(moc);
@@ -54,6 +56,7 @@ public class TalonFXTraining {
 
 	private void setPower(double amount) {
 		motor.set(amount);
+        System.out.println(amount);
 	}
 
 	public void moveAtHalfPower() {
@@ -66,7 +69,6 @@ public class TalonFXTraining {
 
 	public void stopMotor() {
 		motor.stopMotor();
-        motor.set(0);
 	}
 
 	public StatusSignal<Angle> getPosition() {
