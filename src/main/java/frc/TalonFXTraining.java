@@ -26,23 +26,22 @@ public class TalonFXTraining {
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;
 
-		SoftwareLimitSwitchConfigs slsc = new SoftwareLimitSwitchConfigs();
+		SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
 		/* tasks 5 and 7 */
-		slsc.ForwardSoftLimitEnable = true;
-		slsc.ForwardSoftLimitThreshold = 5;
-		slsc.ReverseSoftLimitEnable = true;
-		slsc.ReverseSoftLimitThreshold = -3;
-		motor.getConfigurator().apply(slsc);
+		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
+		softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
+		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
+		softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
+		motor.getConfigurator().apply(softwareLimitSwitchConfigs);
 		/* task 9 */
-		CurrentLimitsConfigs clc = new CurrentLimitsConfigs();
-		// clc.StatorCurrentLimitEnable = false;
-		clc.StatorCurrentLimitEnable = true;
-		clc.SupplyCurrentLowerLimit = 5;
-		clc.StatorCurrentLimit = 40;
-		motor.getConfigurator().apply(clc);
+		CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+		currentLimitsConfigs.StatorCurrentLimitEnable = true;
+		currentLimitsConfigs.SupplyCurrentLowerLimit = 5;
+		currentLimitsConfigs.StatorCurrentLimit = 40;
+		motor.getConfigurator().apply(currentLimitsConfigs);
 		/* task 8 */
-		MotorOutputConfigs moc = new MotorOutputConfigs().withInverted(direction);
-		motor.getConfigurator().apply(moc);
+		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
+		motor.getConfigurator().apply(motorOutputConfigs);
 	}
 
 	private boolean isMotorConnected() {
@@ -55,7 +54,6 @@ public class TalonFXTraining {
 
 	private void setPower(double amount) {
 		motor.set(amount);
-		System.out.println(amount);
 	}
 
 	public void moveAtHalfPower() {
@@ -86,10 +84,10 @@ public class TalonFXTraining {
 		return motor.getStatorCurrent();
 	}
 
-	public void reverseMotor() {
-		MotorOutputConfigs moc = new MotorOutputConfigs();
-		moc.withInverted(getMotorInvertedDirection());
-		motor.getConfigurator().apply(moc);
+	public void invertMotor() {
+		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+		motorOutputConfigs.withInverted(getMotorInvertedDirection());
+		motor.getConfigurator().apply(motorOutputConfigs);
 		direction = getMotorInvertedDirection();
 	}
 
@@ -98,9 +96,9 @@ public class TalonFXTraining {
 	}
 
 	public void setNeutralMode(NeutralModeValue neutralMode) {
-		MotorOutputConfigs moc = new MotorOutputConfigs();
-		moc.withNeutralMode(neutralMode);
-		motor.getConfigurator().apply(moc);
+		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+		motorOutputConfigs.withNeutralMode(neutralMode);
+		motor.getConfigurator().apply(motorOutputConfigs);
 	}
 
 	public void setPosition(double angle) {
