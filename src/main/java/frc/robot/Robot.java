@@ -44,7 +44,6 @@ public class Robot {
 	private final List<Limelight> limelights;
 	private final TalonFXTraining talonFX;
 
-
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
