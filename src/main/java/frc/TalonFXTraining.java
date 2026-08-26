@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ConnectedMotorValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -23,7 +22,7 @@ public class TalonFXTraining {
 	private final String logPath;
 
 	public TalonFXTraining(int deviceId, CANBus canBus, String logPath) {
-		this.logPath=logPath;
+		this.logPath = logPath;
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;
 
@@ -36,9 +35,9 @@ public class TalonFXTraining {
 		motor.getConfigurator().apply(slsc);
 		/* task 9 */
 		CurrentLimitsConfigs clc = new CurrentLimitsConfigs();
-        //clc.StatorCurrentLimitEnable = false;
-        clc.StatorCurrentLimitEnable = true;
-        clc.SupplyCurrentLowerLimit = 5;
+		// clc.StatorCurrentLimitEnable = false;
+		clc.StatorCurrentLimitEnable = true;
+		clc.SupplyCurrentLowerLimit = 5;
 		clc.StatorCurrentLimit = 40;
 		motor.getConfigurator().apply(clc);
 		/* task 8 */
@@ -56,7 +55,7 @@ public class TalonFXTraining {
 
 	private void setPower(double amount) {
 		motor.set(amount);
-        System.out.println(amount);
+		System.out.println(amount);
 	}
 
 	public void moveAtHalfPower() {
@@ -94,9 +93,9 @@ public class TalonFXTraining {
 		direction = getMotorInvertedDirection();
 	}
 
-    public void setVoltage(double voltage){
-        motor.setVoltage(voltage);
-    }
+	public void setVoltage(double voltage) {
+		motor.setVoltage(voltage);
+	}
 
 	public void setNeutralMode(NeutralModeValue neutralMode) {
 		MotorOutputConfigs moc = new MotorOutputConfigs();
