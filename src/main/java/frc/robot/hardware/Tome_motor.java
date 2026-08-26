@@ -87,7 +87,7 @@ public class Tome_motor {
 		connected();
 	}
 
-	public void name() {
+	public void SwitchDierction() {
 		if (Clockwise_Positive == null) {
 			Counter_Clockwise_Positive = null;
 			Clockwise_Positive = InvertedValue.Clockwise_Positive;
@@ -117,6 +117,8 @@ public class Tome_motor {
 	public void set_pos(double pos) {
 		motor.setPosition(pos);
 	}
+
+
 
 
 }
