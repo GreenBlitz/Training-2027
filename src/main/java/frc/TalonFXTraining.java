@@ -20,8 +20,10 @@ public class TalonFXTraining {
 
 	private final TalonFX motor;
 	private InvertedValue direction;
+	private final String logPath;
 
-	public TalonFXTraining(int deviceId, CANBus canBus) {
+	public TalonFXTraining(int deviceId, CANBus canBus, String logPath) {
+		this.logPath=logPath;
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;
 
@@ -107,13 +109,13 @@ public class TalonFXTraining {
 		return direction == InvertedValue.Clockwise_Positive ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
 	}
 
-	private static final String logPath = "/home/linus/roboticsLog";
 
 	public void logAll() {
 		Logger.recordOutput(logPath + "/position", getPosition().getValue());
 		Logger.recordOutput(logPath + "/velocity", getVelocity().getValue());
 		Logger.recordOutput(logPath + "/voltage", getVoltage().getValue());
 		Logger.recordOutput(logPath + "/current", getCurrent().getValue());
+		logMotorConnection();
 	}
 
 }

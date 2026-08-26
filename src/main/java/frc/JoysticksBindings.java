@@ -1,5 +1,7 @@
 package frc;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -47,6 +49,12 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
+
+		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getTalonFX().moveAtHalfPower()));
+		usedJoystick.B.onTrue(new InstantCommand(()-> robot.getTalonFX().moveReverseTenthSpeed()));
+		usedJoystick.X.toggleOnTrue(new InstantCommand(()->robot.getTalonFX().reverseMotor()));
+		usedJoystick.L1.toggleOnTrue(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
+		usedJoystick.L1.toggleOnFalse(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

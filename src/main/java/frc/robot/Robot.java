@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.TalonFXTraining;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -40,6 +42,8 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
+	private final TalonFXTraining talonFX;
+
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -61,6 +65,7 @@ public class Robot {
 			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
+		this.talonFX = new TalonFXTraining(3,new CANBus("rio"),"/motor");
 
 		this.limelights = List.of();
 		limelights.forEach(
@@ -93,6 +98,7 @@ public class Robot {
 
 	public void updateSubsystems() {
 		swerve.update();
+		talonFX.logAll();
 	}
 
 	public void periodic() {
@@ -114,6 +120,10 @@ public class Robot {
 
 	public IPoseEstimator getPoseEstimator() {
 		return poseEstimator;
+	}
+
+	public TalonFXTraining getTalonFX() {
+		return talonFX;
 	}
 
 	public Swerve getSwerve() {
