@@ -54,7 +54,7 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(new InstantCommand(()-> robot.getTalonFX().moveReverseTenthSpeed()));
 		usedJoystick.X.toggleOnTrue(new InstantCommand(()->robot.getTalonFX().reverseMotor()));
 		usedJoystick.L1.toggleOnTrue(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
-		usedJoystick.L1.toggleOnFalse(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
+		usedJoystick.L1.toggleOnFalse(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Coast)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
