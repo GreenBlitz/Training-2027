@@ -56,7 +56,6 @@ public class TalonFXTraining {
 		motor.stopMotor();
 	}
 
-
 	private void setPower(double amount) {
 		motor.set(amount);
 	}
