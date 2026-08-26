@@ -7,6 +7,9 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
+
 
 public class JoysticksBindings {
 
@@ -55,9 +58,13 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(new InstantCommand(()->robot.getTalonFX().reverseMotor()));
 		usedJoystick.POV_LEFT.onTrue(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
 		usedJoystick.POV_RIGHT.onFalse(new InstantCommand(()->robot.getTalonFX().setNeutralMode(NeutralModeValue.Coast)));
-		usedJoystick.Y.onTrue(new InstantCommand(()->robot.getTalonFX().stopMotor()));
+		usedJoystick.Y.onTrue(new InstantCommand(()->{robot.getTalonFX().stopMotor();
+            System.out.println("stop.");}));
 		usedJoystick.R1.onTrue(new InstantCommand(()->robot.getTalonFX().setPosition(0)));
-	}
+        usedJoystick.L1.whileTrue(new InstantCommand(()-> Logger.recordOutput("aaaa", TimeUtil.getCurrentTimeSeconds())));
+	    usedJoystick.POV_DOWN.onTrue(new InstantCommand(()-> robot.getTalonFX().setVoltage(5)));
+
+    }
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;

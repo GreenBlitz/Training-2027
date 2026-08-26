@@ -36,9 +36,9 @@ public class TalonFXTraining {
 		motor.getConfigurator().apply(slsc);
 		/* task 9 */
 		CurrentLimitsConfigs clc = new CurrentLimitsConfigs();
-		clc.SupplyCurrentLimitEnable = true;
-		clc.StatorCurrentLimit = 40;
-		motor.getConfigurator().apply(clc);
+		//clc.StatorCurrentLimitEnable = true;
+		//clc.StatorCurrentLimit = 40;
+		//motor.getConfigurator().apply(clc);
 		/* task 8 */
 		MotorOutputConfigs moc = new MotorOutputConfigs().withInverted(direction);
 		motor.getConfigurator().apply(moc);
@@ -57,15 +57,16 @@ public class TalonFXTraining {
 	}
 
 	public void moveAtHalfPower() {
-		setPower(.5);
+		setPower(0.5);
 	}
 
 	public void moveReverseTenthSpeed() {
-		setPower(-.1);
+		setPower(-0.1);
 	}
 
 	public void stopMotor() {
 		motor.stopMotor();
+        motor.set(0);
 	}
 
 	public StatusSignal<Angle> getPosition() {
@@ -90,6 +91,10 @@ public class TalonFXTraining {
 		motor.getConfigurator().apply(moc);
 		direction = getMotorInvertedDirection();
 	}
+
+    public void setVoltage(double voltage){
+        motor.setVoltage(voltage);
+    }
 
 	public void setNeutralMode(NeutralModeValue neutralMode) {
 		MotorOutputConfigs moc = new MotorOutputConfigs();
