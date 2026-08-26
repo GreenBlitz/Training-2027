@@ -52,6 +52,11 @@ public class TalonFXTraining {
 		Logger.recordOutput(logPath + "/isMotorConnected", isMotorConnected());
 	}
 
+	public void stopMotor() {
+		motor.stopMotor();
+	}
+
+
 	private void setPower(double amount) {
 		motor.set(amount);
 	}
@@ -62,10 +67,6 @@ public class TalonFXTraining {
 
 	public void moveReverseTenthSpeed() {
 		setPower(-0.1);
-	}
-
-	public void stopMotor() {
-		motor.stopMotor();
 	}
 
 	public StatusSignal<Angle> getPosition() {
