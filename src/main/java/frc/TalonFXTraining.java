@@ -43,7 +43,7 @@ public class TalonFXTraining {
 	}
 
 	private boolean isMotorConnected() {
-		return motor.getConnectedMotor().getValue() != ConnectedMotorValue.Unknown;
+		return motor.isConnected();
 	}
 
 	public void logMotorConnection() {
