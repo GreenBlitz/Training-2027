@@ -21,6 +21,11 @@ public class TalonFXTraining {
 	private InvertedValue direction;
 	private final String logPath;
 
+	StatusSignal<AngularVelocity> velocity;
+	StatusSignal<Voltage> voltage;
+	StatusSignal<Current> current;
+	StatusSignal<Angle> position;
+
 	public TalonFXTraining(int deviceId, CANBus canBus, String logPath) {
 		this.logPath = logPath;
 		this.motor = new TalonFX(deviceId, canBus);
@@ -42,8 +47,9 @@ public class TalonFXTraining {
 		configuration.CurrentLimits = currentLimitsConfigs;
 
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP =2;
-		slot0Configs.kD =2;
+		slot0Configs.kP =1;
+		slot0Configs.kD =0;
+		slot0Configs.kI=0;
 		configuration.Slot0 = slot0Configs;
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
 		configuration.MotorOutput = motorOutputConfigs;
@@ -51,6 +57,11 @@ public class TalonFXTraining {
 		motor.getConfigurator().apply(configuration);
 		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().refresh(configuration);
+
+		velocity = motor.getVelocity();
+		voltage = motor.getMotorVoltage();
+		current = motor.getStatorCurrent();
+		position = motor.getPosition();
 	}
 
 	private boolean isMotorConnected() {
@@ -116,29 +127,18 @@ public class TalonFXTraining {
 	}
 
 	public Rotation2d getPosition() {
-		position = motor.getPosition();
-		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position,getSSVelocity()).baseUnitMagnitude());
+		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position,velocity).baseUnitMagnitude());
 	}
 
-	public StatusSignal<AngularVelocity> getSSVelocity() {
-		return motor.getVelocity();
-	}
 	public Rotation2d getVelocity() /* the velocity is this value/sec */ {
-		velocity = getSSVelocity();
 		return Rotation2d.fromRotations(velocity.getValueAsDouble());
 	}
-	public StatusSignal<Voltage> getVoltage() {
-		voltage = motor.getMotorVoltage();
-		return voltage;
+	public double getVoltage() {
+		return voltage.getValueAsDouble();
 	}
-	public StatusSignal<Current> getCurrent() {
-		current = motor.getStatorCurrent();
-		return current;
+	public double getCurrent() {
+		return current.getValueAsDouble();
 	}
-	StatusSignal<AngularVelocity> velocity;
-	StatusSignal<Voltage> voltage;
-	StatusSignal<Current> current;
-	StatusSignal<Angle> position;
 	public void invertMotor() {
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 		motorOutputConfigs.withInverted(getMotorInvertedDirection());
@@ -170,13 +170,9 @@ public class TalonFXTraining {
 
 
 	public void logAll() {
-		getPosition();
 		Logger.recordOutput(logPath + "/position", position.getValue());
-		getVelocity();
 		Logger.recordOutput(logPath + "/velocity", velocity.getValue());
-		getVoltage();
 		Logger.recordOutput(logPath + "/voltage", voltage.getValue());
-		getCurrent();
 		Logger.recordOutput(logPath + "/current", current.getValue());
 		logMotorConnection();
 	}
