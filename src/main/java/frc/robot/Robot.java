@@ -113,7 +113,7 @@ public class Robot {
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
-		CommandScheduler.getInstance().run(); // Should be last
+		CommandScheduler.getInstance().run();// Should be last
 	}
 
 	public IPoseEstimator getPoseEstimator() {
@@ -143,5 +143,4 @@ public class Robot {
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
-
 }

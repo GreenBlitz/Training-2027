@@ -56,8 +56,29 @@ public class TalonFXTraining {
 		motor.stopMotor();
 	}
 
-	private void setPower(double amount) {
+	public void setPower(double amount) {
 		motor.set(amount);
+	}
+
+	private double angleInRadians(Angle angle){
+		return angle.baseUnitMagnitude();
+	}
+
+	public void driveToPositionTick(double angleRadians){
+		double difference = angleDifferenceRadians(angleRadians,angleInRadians(getPosition().getValue()));
+		byte directionMultiplier = (direction==InvertedValue.CounterClockwise_Positive)?(byte)1:(byte)(-1);
+		setPower(difference*directionMultiplier/Math.PI);
+	}
+
+	public static double angleDifferenceRadians(double angle1, double angle2){
+		double baseAngleDiff = (angle1-angle2)%(2*Math.PI);
+		if (baseAngleDiff>Math.PI){
+			return baseAngleDiff-2*Math.PI;
+		} else if (baseAngleDiff<-Math.PI){
+			return baseAngleDiff+2*Math.PI;
+		} else {
+			return baseAngleDiff;
+		}
 	}
 
 	public void moveAtHalfPower() {
