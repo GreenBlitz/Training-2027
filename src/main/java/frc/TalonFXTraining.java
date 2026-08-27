@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -28,10 +29,10 @@ public class TalonFXTraining {
 
 		SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
 		/* tasks 5 and 7 */
-		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
-		softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
-		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
-		softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
+		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = /*true;*/ false;
+		//softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
+		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = /*true;*/ false;
+		//softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
 		motor.getConfigurator().apply(softwareLimitSwitchConfigs);
 		/* task 9 */
 		CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
@@ -64,11 +65,23 @@ public class TalonFXTraining {
 		return angle.baseUnitMagnitude();
 	}
 
+    private double clamp(double val, double min, double max){
+        if (val>min&&val<max){
+            return val;
+        } else if (val>=max){
+            return max;
+        } else {
+            return min;
+        }
+    }
+
 	public void driveToPositionTick(double angleRadians){
-		double difference = angleDifferenceRadians(angleRadians,angleInRadians(getPosition().getValue()));
-		byte directionMultiplier = (direction==InvertedValue.CounterClockwise_Positive)?(byte)1:(byte)(-1);
-		setPower(difference*directionMultiplier/Math.PI);
+		double difference = angleRadians- Rotation2d.fromRotations(getPosition().getValueAsDouble()).getRadians();
+        setVoltage(difference*12/(2*Math.PI));
+        Logger.recordOutput(logPath+"/target",angleRadians);
+        Logger.recordOutput(logPath+"/positionInRadians",Rotation2d.fromRotations(getPosition().getValueAsDouble()).getRadians());
 	}
+
 
 	public static double angleDifferenceRadians(double angle1, double angle2){
 		double baseAngleDiff = (angle1-angle2)%(2*Math.PI);

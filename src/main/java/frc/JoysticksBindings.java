@@ -2,6 +2,7 @@ package frc;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -53,15 +54,17 @@ public class JoysticksBindings {
 
 		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getTalonFX().moveAtHalfPower()));
 		usedJoystick.B.onTrue(new InstantCommand(() -> robot.getTalonFX().moveReverseTenthSpeed()));
-		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getTalonFX().invertMotor()));
 		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() -> robot.getTalonFX().setNeutralMode(NeutralModeValue.Brake)));
 		usedJoystick.POV_RIGHT.onTrue(new InstantCommand(() -> robot.getTalonFX().setNeutralMode(NeutralModeValue.Coast)));
 		usedJoystick.Y.onTrue(new InstantCommand(() -> {
 			robot.getTalonFX().stopMotor();
 			System.out.println("stop.");
 		}));
-		usedJoystick.R1.onTrue(new InstantCommand(() -> robot.getTalonFX().setPosition(0)));
-	}
+		usedJoystick.START.onTrue(new InstantCommand(() -> {robot.getTalonFX().setPosition(0);
+            System.out.println("setpos");}));
+        usedJoystick.POV_UP.whileTrue(new RunCommand(()->robot.getTalonFX().driveToPositionTick(5*Math.PI)));
+	    usedJoystick.POV_UP.onFalse(new InstantCommand(()->robot.getTalonFX().stopMotor()));
+    }
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
