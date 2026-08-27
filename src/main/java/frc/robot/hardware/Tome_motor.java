@@ -52,7 +52,7 @@ public class Tome_motor {
 		motor.stopMotor();
 	}
 
-	public String path = "/users/downloads/";
+	public String path = "motor1";
 
 	public double getacl() {
 		return  motor.getAcceleration().getValueAsDouble();
@@ -104,7 +104,7 @@ public class Tome_motor {
 	}
 
 	public void connected() {
-		Logger.recordOutput(path + "/current", motor.isConnected());
+		Logger.recordOutput(path + "/connected", motor.isConnected());
 	}
 
 
