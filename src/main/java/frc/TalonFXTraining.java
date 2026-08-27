@@ -2,9 +2,8 @@ package frc;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,23 +25,32 @@ public class TalonFXTraining {
 		this.logPath = logPath;
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;
+		TalonFXConfiguration configuration = new TalonFXConfiguration();
 
 		SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-		/* tasks 5 and 7 */
-		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = /*true;*/ false;
-		//softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
-		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = /*true;*/ false;
-		//softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
-		motor.getConfigurator().apply(softwareLimitSwitchConfigs);
-		/* task 9 */
+
+		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
+		softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
+		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
+		softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
+		configuration.SoftwareLimitSwitch = softwareLimitSwitchConfigs;
+
 		CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 		currentLimitsConfigs.StatorCurrentLimitEnable = true;
 		currentLimitsConfigs.SupplyCurrentLowerLimit = 5;
 		currentLimitsConfigs.StatorCurrentLimit = 40;
-		motor.getConfigurator().apply(currentLimitsConfigs);
-		/* task 8 */
+		configuration.CurrentLimits = currentLimitsConfigs;
+
+		Slot0Configs slot0Configs = new Slot0Configs();
+		slot0Configs.kP =2;
+		slot0Configs.kD =2;
+		configuration.Slot0 = slot0Configs;
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
-		motor.getConfigurator().apply(motorOutputConfigs);
+		configuration.MotorOutput = motorOutputConfigs;
+
+		motor.getConfigurator().apply(configuration);
+		motor.optimizeBusUtilization(50);
+		motor.getConfigurator().refresh(configuration);
 	}
 
 	private boolean isMotorConnected() {
@@ -82,6 +90,11 @@ public class TalonFXTraining {
         Logger.recordOutput(logPath+"/positionInRadians",Rotation2d.fromRotations(getPosition().getValueAsDouble()).getRadians());
 	}
 
+	public void driveToPosition(double positionRadians){
+		PositionVoltage positionVoltage = new PositionVoltage(positionRadians*2*Math.PI);
+		motor.setControl(positionVoltage);
+	}
+
 
 	public static double angleDifferenceRadians(double angle1, double angle2){
 		double baseAngleDiff = (angle1-angle2)%(2*Math.PI);
@@ -102,22 +115,30 @@ public class TalonFXTraining {
 		setPower(-0.1);
 	}
 
-	public StatusSignal<Angle> getPosition() {
-		return motor.getPosition();
+	public Rotation2d getPosition() {
+		position = motor.getPosition();
+		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position,getSSVelocity()).baseUnitMagnitude());
 	}
 
-	public StatusSignal<AngularVelocity> getVelocity() {
+	public StatusSignal<AngularVelocity> getSSVelocity() {
 		return motor.getVelocity();
 	}
-
+	public Rotation2d getVelocity() /* the velocity is this value/sec */ {
+		velocity = getSSVelocity();
+		return Rotation2d.fromRotations(velocity.getValueAsDouble());
+	}
 	public StatusSignal<Voltage> getVoltage() {
-		return motor.getMotorVoltage();
+		voltage = motor.getMotorVoltage();
+		return voltage;
 	}
-
 	public StatusSignal<Current> getCurrent() {
-		return motor.getStatorCurrent();
+		current = motor.getStatorCurrent();
+		return current;
 	}
-
+	StatusSignal<AngularVelocity> velocity;
+	StatusSignal<Voltage> voltage;
+	StatusSignal<Current> current;
+	StatusSignal<Angle> position;
 	public void invertMotor() {
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 		motorOutputConfigs.withInverted(getMotorInvertedDirection());
@@ -149,10 +170,14 @@ public class TalonFXTraining {
 
 
 	public void logAll() {
-		Logger.recordOutput(logPath + "/position", getPosition().getValue());
-		Logger.recordOutput(logPath + "/velocity", getVelocity().getValue());
-		Logger.recordOutput(logPath + "/voltage", getVoltage().getValue());
-		Logger.recordOutput(logPath + "/current", getCurrent().getValue());
+		getPosition();
+		Logger.recordOutput(logPath + "/position", position.getValue());
+		getVelocity();
+		Logger.recordOutput(logPath + "/velocity", velocity.getValue());
+		getVoltage();
+		Logger.recordOutput(logPath + "/voltage", voltage.getValue());
+		getCurrent();
+		Logger.recordOutput(logPath + "/current", current.getValue());
 		logMotorConnection();
 	}
 
