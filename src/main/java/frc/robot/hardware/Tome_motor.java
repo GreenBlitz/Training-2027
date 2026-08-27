@@ -1,17 +1,19 @@
 package frc.robot.hardware;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.measure.Frequency;
 import org.littletonrobotics.junction.Logger;
-
 
 public class Tome_motor {
 
@@ -22,10 +24,14 @@ public class Tome_motor {
 	private InvertedValue Counter_Clockwise_Positive = null;
 	private PositionVoltage check = new PositionVoltage(1);
 	public PIDController pidController = new PIDController(1,1,1);
+	private Slot0Configs slot0 = new Slot0Configs();
+	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
+	};
 	public Tome_motor(int id) {
 		this.motor = new TalonFX(id);
 		motor_limit();
 		setCurrent_limit();
+		parentDevice.optimizeBusUtilization();
 	}
 
 
@@ -37,6 +43,7 @@ public class Tome_motor {
 
 		motor.getConfigurator().apply(spin_limit);
 	}
+
 
 	public void setCurrent_limit() {
 		current_limit.StatorCurrentLimitEnable = true;
@@ -75,8 +82,14 @@ public class Tome_motor {
 	}
 
 	public double get_pos() {
-		return  motor.getPosition().getValueAsDouble();
+		double latencyCompensatedValue = BaseStatusSignal.getLatencyCompensatedValueAsDouble(motor.getPosition(),motor.getVelocity());
 
+		return latencyCompensatedValue;
+
+
+	}
+
+	void optimizeBusUtilisation(){
 
 	}
 
@@ -93,10 +106,11 @@ public class Tome_motor {
 		StatusSignal vel =motor.getVelocity();
 		StatusSignal voltage =motor.getMotorVoltage();
 		StatusSignal position =motor.getPosition();
-		check.withUpdateFreqHz((Frequency) position).withUpdateFreqHz(50);
-		check.withUpdateFreqHz((Frequency) voltage).withUpdateFreqHz(50);
-		check.withUpdateFreqHz((Frequency) vel).withUpdateFreqHz(50);
-		check.withUpdateFreqHz((Frequency) current).withUpdateFreqHz(50);
+		position.setUpdateFrequency(50);
+		vel.setUpdateFrequency(50);
+		voltage.setUpdateFrequency(50);
+		current.setUpdateFrequency(50);
+		StatusSignal.refreshAll();
 
 
 	}
@@ -160,8 +174,10 @@ public class Tome_motor {
 
 		}}
 	public void pid_misson2(double target) {
-			pidController.setPID(target,1,1);
 			check.withPosition(target);
+			slot0.withKP(2);
+			slot0.withKD(2);
+			slot0.withKI(2);
 
 
 	}
