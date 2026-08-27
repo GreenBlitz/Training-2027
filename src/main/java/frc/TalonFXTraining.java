@@ -77,7 +77,7 @@ public class TalonFXTraining {
 
 	public void driveToPositionTick(double angleRadians){
 		double difference = angleRadians- Rotation2d.fromRotations(getPosition().getValueAsDouble()).getRadians();
-        setVoltage(difference*12/(2*Math.PI));
+        setVoltage(difference/(2*Math.PI));
         Logger.recordOutput(logPath+"/target",angleRadians);
         Logger.recordOutput(logPath+"/positionInRadians",Rotation2d.fromRotations(getPosition().getValueAsDouble()).getRadians());
 	}
