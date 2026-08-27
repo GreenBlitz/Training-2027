@@ -47,7 +47,7 @@ public class TalonFXTraining {
 		configuration.CurrentLimits = currentLimitsConfigs;
 
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP =1;
+		slot0Configs.kP =20;
 		slot0Configs.kD =0;
 		slot0Configs.kI=0;
 		configuration.Slot0 = slot0Configs;
