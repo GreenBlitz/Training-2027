@@ -119,7 +119,30 @@ public class Tome_motor {
 	}
 
 
+	public void pid_misson(double target){
+		double current = get_pos();
+		double Diffrence = target-current;
+		if (Diffrence>0) {
+			motor.setVoltage(11-11/(Diffrence+1));
+		}
+		if(Diffrence<0){
+			motor.setVoltage(11+11/(Diffrence-1));
+
+		}
 
 
-}
+
+
+
+		}
+
+
+
+
+
+
+		}
+
+
+
 
