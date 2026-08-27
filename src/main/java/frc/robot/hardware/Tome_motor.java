@@ -1,11 +1,15 @@
 package frc.robot.hardware;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Frequency;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -16,8 +20,8 @@ public class Tome_motor {
 	private final CurrentLimitsConfigs current_limit = new CurrentLimitsConfigs();
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
-
-
+	private PositionVoltage check = new PositionVoltage(1);
+	public PIDController pidController = new PIDController(1,1,1);
 	public Tome_motor(int id) {
 		this.motor = new TalonFX(id);
 		motor_limit();
@@ -40,6 +44,11 @@ public class Tome_motor {
 		motor.getConfigurator().apply(current_limit);
 	}
 
+
+
+
+
+
 	public void move_half() {
 		motor.set(0.5);
 	}
@@ -55,7 +64,9 @@ public class Tome_motor {
 	public String path = "/users/downloads/";
 
 	public double getacl() {
+
 		return  motor.getAcceleration().getValueAsDouble();
+
 	}
 
 	public double get_vel() {
@@ -77,6 +88,22 @@ public class Tome_motor {
 	public double get_cur() {
 		return  motor.getStatorCurrent().getValueAsDouble();
 	}
+	public void getthem(){
+		StatusSignal current =motor.getStatorCurrent();
+		StatusSignal vel =motor.getVelocity();
+		StatusSignal voltage =motor.getMotorVoltage();
+		StatusSignal position =motor.getPosition();
+		check.withUpdateFreqHz((Frequency) position).withUpdateFreqHz(50);
+		check.withUpdateFreqHz((Frequency) voltage).withUpdateFreqHz(50);
+		check.withUpdateFreqHz((Frequency) vel).withUpdateFreqHz(50);
+		check.withUpdateFreqHz((Frequency) current).withUpdateFreqHz(50);
+
+
+	}
+
+
+
+
 
 	public void  logger() {
 		Logger.recordOutput(path + "/current", get_cur());
@@ -86,6 +113,7 @@ public class Tome_motor {
 		Logger.recordOutput(path + "/ACL", getacl());
 		connected();
 	}
+
 
 	public void SwitchDierction() {
 		if (Clockwise_Positive == null) {
@@ -124,9 +152,28 @@ public class Tome_motor {
 		double Diffrence = target-current;
 		if (Diffrence>0) {
 			motor.setVoltage(11-11/(Diffrence+1));
+			check.withPosition(Diffrence);
 		}
 		if(Diffrence<0){
 			motor.setVoltage(11+11/(Diffrence-1));
+			check.withPosition(Diffrence);
+
+		}}
+	public void pid_misson2(double target) {
+			pidController.setPID(target,1,1);
+			check.withPosition(target);
+
+
+	}
+
+
+
+
+
+
+
+
+
 
 		}
 
@@ -134,14 +181,8 @@ public class Tome_motor {
 
 
 
-		}
 
 
-
-
-
-
-		}
 
 
 
