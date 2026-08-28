@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -61,6 +62,7 @@ public class TalonFXTraining {
 		current = motor.getStatorCurrent();
 		position = motor.getPosition();
 	}
+
 
 	private boolean isMotorConnected() {
 		return motor.isConnected();
