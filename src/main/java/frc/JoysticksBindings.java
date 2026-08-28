@@ -57,8 +57,8 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
 		usedJoystick.POV_DOWN.onTrue(new InstantCommand(() ->robot.getMotor().set_pos(0)));
 		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() ->robot.getMotor().SwitchDierction()));
-		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson(-2)));
-		usedJoystick.POV_UP.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson(0)));
+		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(-2.0)));
+		usedJoystick.POV_UP.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(2.0)));
 		usedJoystick.R1.onTrue(new InstantCommand(() ->robot.getMotor().stop()));
 
 

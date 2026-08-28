@@ -13,7 +13,9 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.littletonrobotics.junction.Logger;
+
 
 
 public class Tome_motor {
@@ -21,9 +23,7 @@ public class Tome_motor {
 	private final TalonFX motor;
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
-	private PositionVoltage pid_thing = new PositionVoltage(1);
-	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
-	};
+	private PositionVoltage pid_thing = new PositionVoltage(0).withSlot(0);
 	TalonFXConfiguration config = new TalonFXConfiguration();
 
 	public Tome_motor(int id) {
@@ -31,7 +31,8 @@ public class Tome_motor {
 		motor_limit();
 		setCurrent_limit();
 		frequncy_optimaztion();
-		parentDevice.optimizeBusUtilization(50);
+		motor.optimizeBusUtilization(50);
+		config.withSlot0(new Slot0Configs().withKP(1.5));
 		motor.getConfigurator().apply(config);
 	}
 
@@ -74,18 +75,14 @@ public class Tome_motor {
 		StatusSignal vel = motor.getVelocity();
 		vel.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
-		double double_vel = (vel.getValueAsDouble()*360);
-		return Rotation2d.fromDegrees(double_vel);
-
-
+		return Rotation2d.fromRotations(vel.getValueAsDouble());
 	}
 
 	public Rotation2d get_pos() {
-		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(),motor.getVelocity());
-		late.setUpdateFrequency(50);
-		double check = motor.getPosition().getValueAsDouble();
-		double check2 = (check*360);
-		Rotation2d rotatoin = Rotation2d.fromDegrees(check2);
+		StatusSignal freq = motor.getPosition();
+		freq.setUpdateFrequency(50);
+		double late = BaseStatusSignal.getLatencyCompensatedValueAsDouble(motor.getPosition(),motor.getVelocity());
+		Rotation2d rotatoin = Rotation2d.fromRotations(late);
 		return rotatoin;
 
 	}
@@ -159,8 +156,10 @@ public class Tome_motor {
 	}
 
 	public void pid_misson2(double target) {
-		config.withSlot0(new Slot0Configs().withKP(-2).withKD(2).withKI(2));
-		pid_thing.withPosition(target);
+		motor.setControl(pid_thing.withPosition(target));
+
+
+
 	}
 		}
 
