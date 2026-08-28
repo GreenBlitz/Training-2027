@@ -47,8 +47,8 @@ public class TalonFXTraining {
 		configuration.CurrentLimits = currentLimitsConfigs;
 
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP =2;
-		slot0Configs.kD =0;
+		slot0Configs.kP =1.7197265625;
+		slot0Configs.kD =0.0001;
 		slot0Configs.kI=0;
 		configuration.Slot0 = slot0Configs;
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
