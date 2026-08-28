@@ -41,7 +41,7 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
-	private final Tome_motor motor = new Tome_motor(1);
+	private final Tome_motor motor = new Tome_motor(21);
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();

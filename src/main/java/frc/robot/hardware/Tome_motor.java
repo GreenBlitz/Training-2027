@@ -1,60 +1,51 @@
 package frc.robot.hardware;
 
+
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.controller.PIDController;
 import org.littletonrobotics.junction.Logger;
+
 
 public class Tome_motor {
 
 	private final TalonFX motor;
-	private final SoftwareLimitSwitchConfigs spin_limit = new SoftwareLimitSwitchConfigs();
-	private final CurrentLimitsConfigs current_limit = new CurrentLimitsConfigs();
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
-	private PositionVoltage check = new PositionVoltage(1);
-	public PIDController pidController = new PIDController(1,1,1);
-	private Slot0Configs slot0 = new Slot0Configs();
+	private PositionVoltage pid_thing = new PositionVoltage(1);
 	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
 	};
+	TalonFXConfiguration config = new TalonFXConfiguration();
+
 	public Tome_motor(int id) {
-		this.motor = new TalonFX(id);
+		this.motor = new TalonFX(id,CANBus.roboRIO());
 		motor_limit();
 		setCurrent_limit();
-		parentDevice.optimizeBusUtilization();
+		frequncy_optimaztion();
+		parentDevice.optimizeBusUtilization(50);
+		motor.getConfigurator().apply(config);
 	}
-
 
 	public void motor_limit() {
-		spin_limit.ForwardSoftLimitEnable = true;
-		spin_limit.ForwardSoftLimitThreshold = 5.0;
-		spin_limit.ReverseSoftLimitEnable = true;
-		spin_limit.ReverseSoftLimitThreshold = -3.0;
-
-		motor.getConfigurator().apply(spin_limit);
+		config.HardwareLimitSwitch.ForwardLimitEnable=true;
+		config.HardwareLimitSwitch.ReverseLimitEnable = true;
+		config.HardwareLimitSwitch.ForwardLimitAutosetPositionValue = 5.0;
+		config.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = -3.0;
 	}
-
 
 	public void setCurrent_limit() {
-		current_limit.StatorCurrentLimitEnable = true;
-		current_limit.withStatorCurrentLimit(40);
-		motor.getConfigurator().apply(current_limit);
+		config.CurrentLimits.StatorCurrentLimitEnable =true;
+		config.CurrentLimits.StatorCurrentLimit = 40.0;
 	}
-
-
-
-
-
 
 	public void move_half() {
 		motor.set(0.5);
@@ -68,40 +59,55 @@ public class Tome_motor {
 		motor.stopMotor();
 	}
 
-	public String path = "/users/downloads/";
+	public String path = "motor1";
 
 	public double getacl() {
 
-		return  motor.getAcceleration().getValueAsDouble();
+		StatusSignal acl = motor.getAcceleration();
+		acl.setUpdateFrequency(50);
+		StatusSignal.refreshAll();
+		return acl.getValueAsDouble();
 
 	}
 
-	public double get_vel() {
-		return  motor.getVelocity().getValueAsDouble();
-
-	}
-
-	public double get_pos() {
-		double latencyCompensatedValue = BaseStatusSignal.getLatencyCompensatedValueAsDouble(motor.getPosition(),motor.getVelocity());
-
-		return latencyCompensatedValue;
+	public Rotation2d get_vel() {
+		StatusSignal vel = motor.getVelocity();
+		vel.setUpdateFrequency(50);
+		StatusSignal.refreshAll();
+		double double_vel = (vel.getValueAsDouble()*360);
+		return Rotation2d.fromDegrees(double_vel);
 
 
 	}
 
-	void optimizeBusUtilisation(){
+	public Rotation2d get_pos() {
+		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(),motor.getVelocity());
+		late.setUpdateFrequency(50);
+		double check = motor.getPosition().getValueAsDouble();
+		double check2 = (check*360);
+		Rotation2d rotatoin = Rotation2d.fromDegrees(check2);
+		return rotatoin;
 
 	}
+
 
 	public double get_vol() {
-		return  motor.getMotorVoltage().getValueAsDouble();
+		StatusSignal vol = motor.getMotorVoltage();
+		vol.setUpdateFrequency(50);
+		StatusSignal.refreshAll();
+		return vol.getValueAsDouble();
+
 
 	}
-
 	public double get_cur() {
-		return  motor.getStatorCurrent().getValueAsDouble();
+
+		StatusSignal current = motor.getStatorCurrent();
+		current.setUpdateFrequency(50);
+		StatusSignal.refreshAll();
+		return current.getValueAsDouble();
+
 	}
-	public void getthem(){
+	public void frequncy_optimaztion(){
 		StatusSignal current =motor.getStatorCurrent();
 		StatusSignal vel =motor.getVelocity();
 		StatusSignal voltage =motor.getMotorVoltage();
@@ -112,12 +118,7 @@ public class Tome_motor {
 		current.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
 
-
 	}
-
-
-
-
 
 	public void  logger() {
 		Logger.recordOutput(path + "/current", get_cur());
@@ -128,75 +129,40 @@ public class Tome_motor {
 		connected();
 	}
 
-
 	public void SwitchDierction() {
 		if (Clockwise_Positive == null) {
 			Counter_Clockwise_Positive = null;
 			Clockwise_Positive = InvertedValue.Clockwise_Positive;
-			MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
-			motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
-			motor.getConfigurator().apply(motorConfigs);
+			config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+			motor.getConfigurator().apply(config);
 		} else if (Counter_Clockwise_Positive == null) {
 			Clockwise_Positive = null;
 			Counter_Clockwise_Positive = InvertedValue.CounterClockwise_Positive;
-			MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
-			motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-			motor.getConfigurator().apply(motorConfigs);
+			config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+			motor.getConfigurator().apply(config);
+
 		}
 	}
 
 	public void connected() {
-		Logger.recordOutput(path + "/current", motor.isConnected());
+		Logger.recordOutput(path + "/connected", motor.isConnected());
 	}
 
-
 	public void mode_switcher(NeutralModeValue mode) {
-		MotorOutputConfigs motorConfig = new MotorOutputConfigs();
-		motorConfig.NeutralMode = mode;
-		motor.getConfigurator().apply(motorConfig);
+		config.MotorOutput.NeutralMode = mode;
+		motor.getConfigurator().apply(config);
+
 	}
 
 	public void set_pos(double pos) {
 		motor.setPosition(pos);
 	}
 
-
-	public void pid_misson(double target){
-		double current = get_pos();
-		double Diffrence = target-current;
-		if (Diffrence>0) {
-			motor.setVoltage(11-11/(Diffrence+1));
-			check.withPosition(Diffrence);
-		}
-		if(Diffrence<0){
-			motor.setVoltage(11+11/(Diffrence-1));
-			check.withPosition(Diffrence);
-
-		}}
 	public void pid_misson2(double target) {
-			check.withPosition(target);
-			slot0.withKP(2);
-			slot0.withKD(2);
-			slot0.withKI(2);
-
-
+		config.withSlot0(new Slot0Configs().withKP(-2).withKD(2).withKI(2));
+		pid_thing.withPosition(target);
 	}
-
-
-
-
-
-
-
-
-
-
 		}
-
-
-
-
-
 
 
 
