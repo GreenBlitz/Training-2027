@@ -34,10 +34,8 @@ public class TalonFXTraining {
 
 		SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
 
-		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
-		softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = 5;
-		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
-		softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = -3;
+		softwareLimitSwitchConfigs.ForwardSoftLimitEnable = false;
+		softwareLimitSwitchConfigs.ReverseSoftLimitEnable = false;
 		configuration.SoftwareLimitSwitch = softwareLimitSwitchConfigs;
 
 		CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
