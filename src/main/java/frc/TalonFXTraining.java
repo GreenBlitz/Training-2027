@@ -80,19 +80,6 @@ public class TalonFXTraining {
 		motor.set(amount);
 	}
 
-	private double angleInRadians(Angle angle) {
-		return angle.baseUnitMagnitude();
-	}
-
-	private double clamp(double val, double min, double max) {
-		if (val > min && val < max) {
-			return val;
-		} else if (val >= max) {
-			return max;
-		} else {
-			return min;
-		}
-	}
 
 	public void driveToPositionTick(double angleRadians) {
 		double difference = angleRadians - getPosition().getRadians();
@@ -107,16 +94,7 @@ public class TalonFXTraining {
 	}
 
 
-	public static double angleDifferenceRadians(double angle1, double angle2) {
-		double baseAngleDiff = (angle1 - angle2) % (2 * Math.PI);
-		if (baseAngleDiff > Math.PI) {
-			return baseAngleDiff - 2 * Math.PI;
-		} else if (baseAngleDiff < -Math.PI) {
-			return baseAngleDiff + 2 * Math.PI;
-		} else {
-			return baseAngleDiff;
-		}
-	}
+
 
 	public void moveAtHalfPower() {
 		setPower(0.5);
