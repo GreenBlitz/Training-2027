@@ -47,7 +47,7 @@ public class TalonFXTraining {
 		configuration.CurrentLimits = currentLimitsConfigs;
 
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP =20;
+		slot0Configs.kP =2;
 		slot0Configs.kD =0;
 		slot0Configs.kI=0;
 		configuration.Slot0 = slot0Configs;
@@ -102,7 +102,7 @@ public class TalonFXTraining {
 	}
 
 	public void driveToPosition(double positionRadians){
-		PositionVoltage positionVoltage = new PositionVoltage(positionRadians*2*Math.PI);
+		PositionVoltage positionVoltage = new PositionVoltage(positionRadians/(2*Math.PI));
 		motor.setControl(positionVoltage);
 	}
 
@@ -127,16 +127,20 @@ public class TalonFXTraining {
 	}
 
 	public Rotation2d getPosition() {
+        position.refresh();
 		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position,velocity).baseUnitMagnitude());
 	}
 
-	public Rotation2d getVelocity() /* the velocity is this value/sec */ {
+	public Rotation2d getVelocity() {
+        velocity.refresh();
 		return Rotation2d.fromRotations(velocity.getValueAsDouble());
 	}
 	public double getVoltage() {
+        voltage.refresh();
 		return voltage.getValueAsDouble();
 	}
 	public double getCurrent() {
+        current.refresh();
 		return current.getValueAsDouble();
 	}
 	public void invertMotor() {
@@ -170,10 +174,10 @@ public class TalonFXTraining {
 
 
 	public void logAll() {
-		Logger.recordOutput(logPath + "/position", position.getValue());
-		Logger.recordOutput(logPath + "/velocity", velocity.getValue());
-		Logger.recordOutput(logPath + "/voltage", voltage.getValue());
-		Logger.recordOutput(logPath + "/current", current.getValue());
+		Logger.recordOutput(logPath + "/position", position.refresh().getValue());
+		Logger.recordOutput(logPath + "/velocity", velocity.refresh().getValue());
+		Logger.recordOutput(logPath + "/voltage", voltage.refresh().getValue());
+		Logger.recordOutput(logPath + "/current", current.refresh().getValue());
 		logMotorConnection();
 	}
 

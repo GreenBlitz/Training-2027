@@ -62,7 +62,7 @@ public class JoysticksBindings {
 		}));
 		usedJoystick.START.onTrue(new InstantCommand(() -> {robot.getTalonFX().setPosition(0);
             System.out.println("setpos");}));
-        usedJoystick.POV_UP.whileTrue(new RunCommand(()->robot.getTalonFX().driveToPositionTick(5*Math.PI)));
+        usedJoystick.POV_UP.whileTrue(new RunCommand(()->robot.getTalonFX().driveToPosition(5*Math.PI)));
 	    usedJoystick.POV_UP.onFalse(new InstantCommand(()->robot.getTalonFX().stopMotor()));
     }
 
