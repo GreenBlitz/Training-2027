@@ -47,9 +47,9 @@ public class TalonFXTraining {
 		configuration.CurrentLimits = currentLimitsConfigs;
 
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP =1;
-		slot0Configs.kD =0;
-		slot0Configs.kI=0;
+		slot0Configs.kP = 1;
+		slot0Configs.kD = 0;
+		slot0Configs.kI = 0;
 		configuration.Slot0 = slot0Configs;
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
 		configuration.MotorOutput = motorOutputConfigs;
@@ -80,39 +80,39 @@ public class TalonFXTraining {
 		motor.set(amount);
 	}
 
-	private double angleInRadians(Angle angle){
+	private double angleInRadians(Angle angle) {
 		return angle.baseUnitMagnitude();
 	}
 
-    private double clamp(double val, double min, double max){
-        if (val>min&&val<max){
-            return val;
-        } else if (val>=max){
-            return max;
-        } else {
-            return min;
-        }
-    }
-
-	public void driveToPositionTick(double angleRadians){
-		double difference = angleRadians- getPosition().getRadians();
-        setVoltage(difference/(2*Math.PI));
-        Logger.recordOutput(logPath+"/target",angleRadians);
-        Logger.recordOutput(logPath+"/positionInRadians",getPosition().getRadians());
+	private double clamp(double val, double min, double max) {
+		if (val > min && val < max) {
+			return val;
+		} else if (val >= max) {
+			return max;
+		} else {
+			return min;
+		}
 	}
 
-	public void driveToPosition(double positionRadians){
-		PositionVoltage positionVoltage = new PositionVoltage(positionRadians*2*Math.PI);
+	public void driveToPositionTick(double angleRadians) {
+		double difference = angleRadians - getPosition().getRadians();
+		setVoltage(difference / (2 * Math.PI));
+		Logger.recordOutput(logPath + "/target", angleRadians);
+		Logger.recordOutput(logPath + "/positionInRadians", getPosition().getRadians());
+	}
+
+	public void driveToPosition(double positionRadians) {
+		PositionVoltage positionVoltage = new PositionVoltage(positionRadians * 2 * Math.PI);
 		motor.setControl(positionVoltage);
 	}
 
 
-	public static double angleDifferenceRadians(double angle1, double angle2){
-		double baseAngleDiff = (angle1-angle2)%(2*Math.PI);
-		if (baseAngleDiff>Math.PI){
-			return baseAngleDiff-2*Math.PI;
-		} else if (baseAngleDiff<-Math.PI){
-			return baseAngleDiff+2*Math.PI;
+	public static double angleDifferenceRadians(double angle1, double angle2) {
+		double baseAngleDiff = (angle1 - angle2) % (2 * Math.PI);
+		if (baseAngleDiff > Math.PI) {
+			return baseAngleDiff - 2 * Math.PI;
+		} else if (baseAngleDiff < -Math.PI) {
+			return baseAngleDiff + 2 * Math.PI;
 		} else {
 			return baseAngleDiff;
 		}
@@ -127,18 +127,21 @@ public class TalonFXTraining {
 	}
 
 	public Rotation2d getPosition() {
-		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position,velocity).baseUnitMagnitude());
+		return Rotation2d.fromRadians(StatusSignal.getLatencyCompensatedValue(position, velocity).baseUnitMagnitude());
 	}
 
 	public Rotation2d getVelocity() /* the velocity is this value/sec */ {
 		return Rotation2d.fromRotations(velocity.getValueAsDouble());
 	}
+
 	public double getVoltage() {
 		return voltage.getValueAsDouble();
 	}
+
 	public double getCurrent() {
 		return current.getValueAsDouble();
 	}
+
 	public void invertMotor() {
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 		motorOutputConfigs.withInverted(getMotorInvertedDirection());

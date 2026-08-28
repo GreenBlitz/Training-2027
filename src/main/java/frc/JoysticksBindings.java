@@ -60,11 +60,13 @@ public class JoysticksBindings {
 			robot.getTalonFX().stopMotor();
 			System.out.println("stop.");
 		}));
-		usedJoystick.START.onTrue(new InstantCommand(() -> {robot.getTalonFX().setPosition(0);
-            System.out.println("setpos");}));
-        usedJoystick.POV_UP.whileTrue(new RunCommand(()->robot.getTalonFX().driveToPositionTick(5*Math.PI)));
-	    usedJoystick.POV_UP.onFalse(new InstantCommand(()->robot.getTalonFX().stopMotor()));
-    }
+		usedJoystick.START.onTrue(new InstantCommand(() -> {
+			robot.getTalonFX().setPosition(0);
+			System.out.println("setpos");
+		}));
+		usedJoystick.POV_UP.whileTrue(new RunCommand(() -> robot.getTalonFX().driveToPositionTick(5 * Math.PI)));
+		usedJoystick.POV_UP.onFalse(new InstantCommand(() -> robot.getTalonFX().stopMotor()));
+	}
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;

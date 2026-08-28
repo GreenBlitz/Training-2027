@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.JoysticksBindings;
 import frc.RobotManager;
 import frc.TalonFXTraining;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -145,4 +144,5 @@ public class Robot {
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
+
 }
