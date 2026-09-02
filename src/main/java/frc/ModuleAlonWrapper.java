@@ -15,14 +15,16 @@ public class ModuleAlonWrapper {
 	private ModuleAlon moduleAlon;
 	private boolean comboButton1 = false;
 	private boolean comboButton2 = false;
-    private Trigger combo;
+	private Trigger combo;
 
 	public ModuleAlonWrapper(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
 		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
 		TalonFXTraining drive = new TalonFXTraining(linearID, canBus, logPath + "/drive", linearGearRatio);
 		moduleAlon = new ModuleAlon(drive, steer, logPath);
-        combo = new Trigger(()->(comboButton1&&comboButton2));
-        combo.onTrue(new InstantCommand(()->{moduleAlon.linearSetPower(0.5);}));
+		combo = new Trigger(() -> (comboButton1 && comboButton2));
+		combo.onTrue(new InstantCommand(() -> {
+			moduleAlon.linearSetPower(0.5);
+		}));
 	}
 
 	public RunCommand driveWithStick(Supplier<Double> xAxis, Supplier<Double> yAxis) {
@@ -42,9 +44,9 @@ public class ModuleAlonWrapper {
 		return driveWithStick(() -> joystick.getAxisValue(Axis.RIGHT_X), () -> joystick.getAxisValue(Axis.RIGHT_Y));
 	}
 
-    public Trigger getComboTrigger(){
-        return combo;
-    }
+	public Trigger getComboTrigger() {
+		return combo;
+	}
 
 
 	public void bindComboButtons(SmartJoystick joystick) {

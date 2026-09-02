@@ -17,7 +17,7 @@ public class ModuleAlon extends GBSubsystem {
 		this.linear = linear;
 		this.steer = steer;
 		this.LOGPATH = logPath;
-        super.setDefaultCommand(new InstantCommand(()->stop()));
+		super.setDefaultCommand(new InstantCommand(() -> stop()));
 	}
 
 	public void invertLinear() {
