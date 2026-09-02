@@ -79,10 +79,10 @@ public class Tome_motor {
 	}
 
 	public Rotation2d get_pos() {
-		StatusSignal freq = motor.getPosition();
-		freq.setUpdateFrequency(50);
-		double late = BaseStatusSignal.getLatencyCompensatedValueAsDouble(motor.getPosition(),motor.getVelocity());
-		Rotation2d rotatoin = Rotation2d.fromRotations(late);
+
+		StatusSignal late = (StatusSignal)BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(),motor.getVelocity());
+		late.setUpdateFrequency(50);
+		Rotation2d rotatoin = Rotation2d.fromRotations(late.getValueAsDouble()*360);
 		return rotatoin;
 
 	}
