@@ -33,6 +33,7 @@ public class Tome_motor {
 		frequncy_optimaztion();
 		parentDevice.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
+
 	}
 
 	public void motor_limit() {
@@ -83,12 +84,13 @@ public class Tome_motor {
 	public Rotation2d get_pos() {
 		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(),motor.getVelocity());
 		late.setUpdateFrequency(50);
-		double check = motor.getPosition().getValueAsDouble();
+		double check = late.getValueAsDouble();
 		double check2 = (check*360);
 		Rotation2d rotatoin = Rotation2d.fromDegrees(check2);
 		return rotatoin;
 
 	}
+
 
 
 	public double get_vol() {
