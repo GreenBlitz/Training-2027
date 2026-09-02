@@ -4,6 +4,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.SmartJoystick;
 
@@ -14,11 +15,14 @@ public class ModuleAlonWrapper {
 	private ModuleAlon moduleAlon;
 	private boolean comboButton1 = false;
 	private boolean comboButton2 = false;
+    private Trigger combo;
 
 	public ModuleAlonWrapper(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
 		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
 		TalonFXTraining drive = new TalonFXTraining(linearID, canBus, logPath + "/drive", linearGearRatio);
 		moduleAlon = new ModuleAlon(drive, steer, logPath);
+        combo = new Trigger(()->(comboButton1&&comboButton2));
+        combo.onTrue(new InstantCommand(()->{moduleAlon.linearSetPower(0.5);}));
 	}
 
 	public RunCommand driveWithStick(Supplier<Double> xAxis, Supplier<Double> yAxis) {
@@ -38,23 +42,20 @@ public class ModuleAlonWrapper {
 		return driveWithStick(() -> joystick.getAxisValue(Axis.RIGHT_X), () -> joystick.getAxisValue(Axis.RIGHT_Y));
 	}
 
-	public void checkComboAndExecute() {
-		if (comboButton1 && comboButton2) {
-			moduleAlon.linearSetPower(0.5);
-		}
-	}
+    public Trigger getComboTrigger(){
+        return combo;
+    }
+
 
 	public void bindComboButtons(SmartJoystick joystick) {
 		joystick.A.onTrue(new InstantCommand(() -> {
 			comboButton1 = true;
-			checkComboAndExecute();
 		}));
 		joystick.A.onFalse(new InstantCommand(() -> {
 			comboButton1 = false;
 		}));
 		joystick.B.onTrue(new InstantCommand(() -> {
 			comboButton2 = true;
-			checkComboAndExecute();
 		}));
 		joystick.B.onFalse(new InstantCommand(() -> {
 			comboButton2 = false;
