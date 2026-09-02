@@ -10,14 +10,14 @@ import frc.joysticks.SmartJoystick;
 
 import java.util.function.Supplier;
 
-public class ModuleAlonWrapper {
+public class ModulesCommandBuilder {
 
 	private ModuleAlon moduleAlon;
 	private boolean comboButton1 = false;
 	private boolean comboButton2 = false;
 	private Trigger combo;
 
-	public ModuleAlonWrapper(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
+	public ModulesCommandBuilder(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
 		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
 		TalonFXTraining drive = new TalonFXTraining(linearID, canBus, logPath + "/drive", linearGearRatio);
 		moduleAlon = new ModuleAlon(drive, steer, logPath);
@@ -64,6 +64,9 @@ public class ModuleAlonWrapper {
 		}));
 	}
 
+    public void logAll(){
+        moduleAlon.logAll();
+    }
 	public void setNeutralModeToLinear(NeutralModeValue mode) {
 		moduleAlon.setLinearNeutral(mode);
 	}
