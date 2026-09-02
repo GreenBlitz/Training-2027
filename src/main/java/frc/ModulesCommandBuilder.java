@@ -41,11 +41,11 @@ public class ModulesCommandBuilder {
 		});
 	}
 
-	public RunCommand driveWithLeftStick(){
+	public RunCommand driveWithLeftStick() {
 		return driveWithLeftStick(defaultJoystick);
 	}
 
-	public RunCommand driveWithRightStick(){
+	public RunCommand driveWithRightStick() {
 		return driveWithRightStick(defaultJoystick);
 	}
 
@@ -77,9 +77,10 @@ public class ModulesCommandBuilder {
 		}));
 	}
 
-    public void logAll(){
-        moduleAlon.logAll();
-    }
+	public void logAll() {
+		moduleAlon.logAll();
+	}
+
 	public void setNeutralModeToLinear(NeutralModeValue mode) {
 		moduleAlon.setLinearNeutral(mode);
 	}

@@ -64,7 +64,7 @@ public class Robot {
 			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
-		this.moduleAlon = new ModulesCommandBuilder(21,3, 1,1,new CANBus("rio"), "/motor");
+		this.moduleAlon = new ModulesCommandBuilder(21, 3, 1, 1, new CANBus("rio"), "/motor");
 
 		this.limelights = List.of();
 		limelights.forEach(
@@ -117,7 +117,6 @@ public class Robot {
 		BusChain.logChainsStatuses();
 		moduleAlon.driveWithRightStick().execute();
 		CommandScheduler.getInstance().run();// Should be last
-
 	}
 
 	public IPoseEstimator getPoseEstimator() {
