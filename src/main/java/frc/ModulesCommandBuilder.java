@@ -1,0 +1,100 @@
+package frc;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.joysticks.Axis;
+import frc.joysticks.SmartJoystick;
+
+import java.util.function.Supplier;
+
+public class ModulesCommandBuilder {
+
+	private ModuleAlon moduleAlon;
+	private boolean comboButton1 = false;
+	private boolean comboButton2 = false;
+	private Trigger combo;
+	private SmartJoystick defaultJoystick;
+
+	public ModulesCommandBuilder(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
+		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
+		TalonFXTraining drive = new TalonFXTraining(linearID, canBus, logPath + "/drive", linearGearRatio);
+		moduleAlon = new ModuleAlon(drive, steer, logPath);
+		combo = new Trigger(() -> (comboButton1 && comboButton2));
+		combo.onTrue(new InstantCommand(() -> {
+			moduleAlon.linearSetPower(0.5);
+		}));
+	}
+
+	public void setDefaultJoystick(SmartJoystick defaultJoystick) {
+		this.defaultJoystick = defaultJoystick;
+	}
+
+	public RunCommand driveWithStick(Supplier<Double> xAxis, Supplier<Double> yAxis) {
+		return new RunCommand(() -> {
+			double x = xAxis.get();
+			double y = yAxis.get();
+			moduleAlon.steerToPosition(Math.atan2(y, x));
+			moduleAlon.linearSetPower(Math.sqrt(x * x + y * y));
+		});
+	}
+
+	public RunCommand driveWithLeftStick() {
+		return driveWithLeftStick(defaultJoystick);
+	}
+
+	public RunCommand driveWithRightStick() {
+		return driveWithRightStick(defaultJoystick);
+	}
+
+	public RunCommand driveWithLeftStick(SmartJoystick joystick) {
+		return driveWithStick(() -> joystick.getAxisValue(Axis.LEFT_X), () -> joystick.getAxisValue(Axis.LEFT_Y));
+	}
+
+	public RunCommand driveWithRightStick(SmartJoystick joystick) {
+		return driveWithStick(() -> joystick.getAxisValue(Axis.RIGHT_X), () -> joystick.getAxisValue(Axis.RIGHT_Y));
+	}
+
+	public Trigger getComboTrigger() {
+		return combo;
+	}
+
+
+	public void bindComboButtons(SmartJoystick joystick) {
+		joystick.A.onTrue(new InstantCommand(() -> {
+			comboButton1 = true;
+		}));
+		joystick.A.onFalse(new InstantCommand(() -> {
+			comboButton1 = false;
+		}));
+		joystick.B.onTrue(new InstantCommand(() -> {
+			comboButton2 = true;
+		}));
+		joystick.B.onFalse(new InstantCommand(() -> {
+			comboButton2 = false;
+		}));
+	}
+
+	public void logAll() {
+		moduleAlon.logAll();
+	}
+
+	public void setNeutralModeToLinear(NeutralModeValue mode) {
+		moduleAlon.setLinearNeutral(mode);
+	}
+
+	public void setNeutralModeToSteer(NeutralModeValue mode) {
+		moduleAlon.setSteerNeutral(mode);
+	}
+
+	public void linearWithStickValue(SmartJoystick joystick, Axis axis) {
+		moduleAlon.linearSetPower(joystick.getAxisValue(axis));
+	}
+
+	public void stopModule() {
+		moduleAlon.stop();
+	}
+
+}
