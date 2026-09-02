@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -27,7 +28,7 @@ public class TalonFXTraining {
 	StatusSignal<Current> current;
 	StatusSignal<Angle> position;
 
-	public TalonFXTraining(int deviceId, CANBus canBus, String logPath) {
+	public TalonFXTraining(int deviceId, CANBus canBus, String logPath, double gearRatio) {
 		this.logPath = logPath;
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;
@@ -53,15 +54,20 @@ public class TalonFXTraining {
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(direction);
 		configuration.MotorOutput = motorOutputConfigs;
 
+		FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
+		feedbackConfigs.SensorToMechanismRatio=gearRatio;
+		configuration.Feedback = feedbackConfigs;
+
 		motor.getConfigurator().apply(configuration);
 		motor.optimizeBusUtilization(50);
-		motor.getConfigurator().refresh(configuration);
 
 		velocity = motor.getVelocity();
 		voltage = motor.getMotorVoltage();
 		current = motor.getStatorCurrent();
 		position = motor.getPosition();
 	}
+
+
 
 
 	private boolean isMotorConnected() {
@@ -160,6 +166,10 @@ public class TalonFXTraining {
 		Logger.recordOutput(logPath + "/voltage", voltage.refresh().getValue());
 		Logger.recordOutput(logPath + "/current", current.refresh().getValue());
 		logMotorConnection();
+	}
+
+	public double getPIDTarget(){
+		return motor.getClosedLoopReference().getValueAsDouble();
 	}
 
 }
