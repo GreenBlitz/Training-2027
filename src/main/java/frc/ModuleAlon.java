@@ -2,6 +2,7 @@ package frc;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,11 +12,12 @@ public class ModuleAlon extends GBSubsystem {
 	private final TalonFXTraining steer;
 	private final String LOGPATH;
 
-	public ModuleAlon(TalonFXTraining linear, TalonFXTraining steer, String LOGPATH) {
-		super(LOGPATH);
+	public ModuleAlon(TalonFXTraining linear, TalonFXTraining steer, String logPath) {
+		super(logPath);
 		this.linear = linear;
 		this.steer = steer;
-		this.LOGPATH = LOGPATH;
+		this.LOGPATH = logPath;
+        super.setDefaultCommand(new InstantCommand(()->stop()));
 	}
 
 	public void invertLinear() {
