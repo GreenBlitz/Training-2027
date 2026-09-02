@@ -11,8 +11,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -55,7 +53,7 @@ public class TalonFXTraining {
 		configuration.MotorOutput = motorOutputConfigs;
 
 		FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-		feedbackConfigs.SensorToMechanismRatio=gearRatio;
+		feedbackConfigs.SensorToMechanismRatio = gearRatio;
 		configuration.Feedback = feedbackConfigs;
 
 		motor.getConfigurator().apply(configuration);
@@ -66,8 +64,6 @@ public class TalonFXTraining {
 		current = motor.getStatorCurrent();
 		position = motor.getPosition();
 	}
-
-
 
 
 	private boolean isMotorConnected() {
@@ -98,8 +94,6 @@ public class TalonFXTraining {
 		PositionVoltage positionVoltage = new PositionVoltage(positionRadians / (2 * Math.PI));
 		motor.setControl(positionVoltage);
 	}
-
-
 
 
 	public void moveAtHalfPower() {
@@ -168,7 +162,7 @@ public class TalonFXTraining {
 		logMotorConnection();
 	}
 
-	public double getPIDTarget(){
+	public double getPIDTarget() {
 		return motor.getClosedLoopReference().getValueAsDouble();
 	}
 
