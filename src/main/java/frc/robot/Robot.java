@@ -115,6 +115,7 @@ public class Robot {
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
+		moduleAlon.driveWithRightStick().execute();
 		CommandScheduler.getInstance().run();// Should be last
 
 	}

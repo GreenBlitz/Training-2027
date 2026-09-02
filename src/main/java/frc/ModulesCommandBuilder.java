@@ -16,6 +16,7 @@ public class ModulesCommandBuilder {
 	private boolean comboButton1 = false;
 	private boolean comboButton2 = false;
 	private Trigger combo;
+	private SmartJoystick defaultJoystick;
 
 	public ModulesCommandBuilder(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
 		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
@@ -27,6 +28,10 @@ public class ModulesCommandBuilder {
 		}));
 	}
 
+	public void setDefaultJoystick(SmartJoystick defaultJoystick) {
+		this.defaultJoystick = defaultJoystick;
+	}
+
 	public RunCommand driveWithStick(Supplier<Double> xAxis, Supplier<Double> yAxis) {
 		return new RunCommand(() -> {
 			double x = xAxis.get();
@@ -34,6 +39,14 @@ public class ModulesCommandBuilder {
 			moduleAlon.steerToPosition(Math.atan2(y, x));
 			moduleAlon.linearSetPower(Math.sqrt(x * x + y * y));
 		});
+	}
+
+	public RunCommand driveWithLeftStick(){
+		return driveWithLeftStick(defaultJoystick);
+	}
+
+	public RunCommand driveWithRightStick(){
+		return driveWithRightStick(defaultJoystick);
 	}
 
 	public RunCommand driveWithLeftStick(SmartJoystick joystick) {
