@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 
-public class TalonFXTraining {
+public class AlonFX {
 
 	private final TalonFX motor;
 	private InvertedValue direction;
@@ -26,7 +26,7 @@ public class TalonFXTraining {
 	StatusSignal<Current> current;
 	StatusSignal<Angle> position;
 
-	public TalonFXTraining(int deviceId, CANBus canBus, String logPath, double gearRatio) {
+	public AlonFX(int deviceId, CANBus canBus, String logPath, double gearRatio) {
 		this.logPath = logPath;
 		this.motor = new TalonFX(deviceId, canBus);
 		direction = InvertedValue.CounterClockwise_Positive;

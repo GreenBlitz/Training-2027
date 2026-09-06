@@ -19,8 +19,8 @@ public class ModulesCommandBuilder {
 	private SmartJoystick defaultJoystick;
 
 	public ModulesCommandBuilder(int steerID, int linearID, double steerGearRatio, double linearGearRatio, CANBus canBus, String logPath) {
-		TalonFXTraining steer = new TalonFXTraining(steerID, canBus, logPath + "/steer", steerGearRatio);
-		TalonFXTraining drive = new TalonFXTraining(linearID, canBus, logPath + "/drive", linearGearRatio);
+		AlonFX steer = new AlonFX(steerID, canBus, logPath + "/steer", steerGearRatio);
+		AlonFX drive = new AlonFX(linearID, canBus, logPath + "/drive", linearGearRatio);
 		moduleAlon = new ModuleAlon(drive, steer, logPath);
 		combo = new Trigger(() -> (comboButton1 && comboButton2));
 		combo.onTrue(new InstantCommand(() -> {

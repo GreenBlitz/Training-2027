@@ -8,11 +8,11 @@ import org.littletonrobotics.junction.Logger;
 
 public class ModuleAlon extends GBSubsystem {
 
-	private final TalonFXTraining linear;
-	private final TalonFXTraining steer;
+	private final AlonFX linear;
+	private final AlonFX steer;
 	private final String LOGPATH;
 
-	public ModuleAlon(TalonFXTraining linear, TalonFXTraining steer, String logPath) {
+	public ModuleAlon(AlonFX linear, AlonFX steer, String logPath) {
 		super(logPath);
 		this.linear = linear;
 		this.steer = steer;
