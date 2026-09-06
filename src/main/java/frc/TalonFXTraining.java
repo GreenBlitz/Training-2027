@@ -57,12 +57,16 @@ public class TalonFXTraining {
 		configuration.Feedback = feedbackConfigs;
 
 		motor.getConfigurator().apply(configuration);
-		motor.optimizeBusUtilization(50);
+		motor.optimizeBusUtilization();
 
 		velocity = motor.getVelocity();
+		velocity.setUpdateFrequency(50);
 		voltage = motor.getMotorVoltage();
+		voltage.setUpdateFrequency(50);
 		current = motor.getStatorCurrent();
+		current.setUpdateFrequency(50);
 		position = motor.getPosition();
+		position.setUpdateFrequency(50);
 	}
 
 
