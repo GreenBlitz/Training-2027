@@ -3,6 +3,7 @@ package frc;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -68,8 +69,8 @@ public class AlonFX {
 		current.setUpdateFrequency(50);
 		position = motor.getPosition();
 		position.setUpdateFrequency(50);
-	}
 
+	}
 
 	private boolean isMotorConnected() {
 		return motor.isConnected();

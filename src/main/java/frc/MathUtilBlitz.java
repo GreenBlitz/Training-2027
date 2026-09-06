@@ -29,4 +29,7 @@ public class MathUtilBlitz {
 		}
 	}
 
+	public static boolean tolerance(double x, double y, double tolerance){
+		return Math.abs(x-y)<=tolerance;
+	}
 }
