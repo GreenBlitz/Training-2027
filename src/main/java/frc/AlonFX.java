@@ -3,6 +3,7 @@ package frc;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -155,6 +156,12 @@ public class AlonFX {
 
 	private InvertedValue getMotorInvertedDirection() {
 		return direction == InvertedValue.Clockwise_Positive ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
+	}
+
+	public void runInStablePowerToPosition( double positionRotations,double power){
+		PositionDutyCycle positionDutyCycle = new PositionDutyCycle(positionRotations);
+		positionDutyCycle.FeedForward = power;
+		motor.setControl(positionDutyCycle);
 	}
 
 
