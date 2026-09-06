@@ -157,7 +157,7 @@ public class Tome_motor {
 	}
 
 	public void pid_misson2(double target) {
-		config.withSlot0(new Slot0Configs().withKP(-2).withKD(2).withKI(2));
+		config.withSlot0(new Slot0Configs().withKP(1.5));
 		pid_thing.withPosition(target);
 	}
 	public void setvoltage(double vol){

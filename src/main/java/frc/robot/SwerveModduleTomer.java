@@ -1,6 +1,7 @@
-`package frc.robot;
+package frc.robot;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
@@ -23,11 +24,15 @@ public class SwerveModduleTomer {
     };
     private final Tome_motor drive = new Tome_motor(21);
     TalonFXConfiguration config = new TalonFXConfiguration();
+    public Double targetvoltage = null;
+    public Double target1 = null;
+    CANcoderConfiguration canfig = new CANcoderConfiguration();
 
-    public SwerveModduleTomer(int id) {
+    public SwerveModduleTomer(int id,double value) {
         this.swerve = new TalonFX(id,CANBus.roboRIO());
         motor_limit();
         setCurrent_limit();
+        config.Feedback.SensorToMechanismRatio = value;
         parentDevice.optimizeBusUtilization(50);
         swerve.getConfigurator().apply(config);
     }
@@ -58,10 +63,12 @@ public class SwerveModduleTomer {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
     }
     public void setposition(double pos){
+        target1 = pos;
         swerve.setPosition(pos);
 
     }
     public void drivewheelVoltage(double vol){
+        targetvoltage = vol;
         drive.setvoltage(vol);
     }
     public void getPosition(){
@@ -97,11 +104,13 @@ public class SwerveModduleTomer {
         Logger.recordOutput(path + "/velocity", Rotation2d.fromDegrees(swerve.getVelocity().getValueAsDouble()));
         Logger.recordOutput(path + "/driveVoltage", drive.get_vol());
         Logger.recordOutput(path + "/position", get_pos());
-        Logger.recordOutput(path+"/");
+        Logger.recordOutput(path+"/targerpos", target1);
+        Logger.recordOutput(path+"/targetvol",targetvoltage);
 
 
     }
     public void pid_misson2(double target) {
+        target1 = target;
         config.withSlot0(new Slot0Configs().withKP(1.5));
         pid_thing.withPosition(target);
     }
@@ -118,4 +127,3 @@ public class SwerveModduleTomer {
 
 
 
-`
