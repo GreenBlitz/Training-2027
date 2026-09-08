@@ -15,6 +15,17 @@ import org.littletonrobotics.junction.Logger;
 
 public class jbsubclass {
     public final SwerveModduleTomer tuff= new SwerveModduleTomer(12,1);
+
+    public void larp(double x,double y){
+        double rads = Math.atan2(x,y);
+        Rotation2d rotation2d = Rotation2d.fromRadians(rads);
+        tuff.setposition(rotation2d);
+    }
+    public void larp2 (){
+
+    }
+
+
     
 
 }

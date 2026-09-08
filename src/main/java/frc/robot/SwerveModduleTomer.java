@@ -62,9 +62,8 @@ public class SwerveModduleTomer {
         config.CurrentLimits.StatorCurrentLimitEnable =true;
         config.CurrentLimits.StatorCurrentLimit = 40.0;
     }
-    public void setposition(double pos){
-        target1 = pos;
-        swerve.setPosition(pos);
+    public void setposition(Rotation2d pos){
+        swerve.setPosition(pos.getDegrees());
 
     }
     public void drivewheelVoltage(double vol){
