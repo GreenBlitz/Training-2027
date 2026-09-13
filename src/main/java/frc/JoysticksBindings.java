@@ -6,6 +6,7 @@ import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.ChassisPowers;
 
+
 public class JoysticksBindings {
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN, true);
@@ -47,6 +48,8 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
+		robot.getModuleAlon().setDefaultJoystick(usedJoystick);
+		robot.getModuleAlon().bindComboButtons(usedJoystick);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
