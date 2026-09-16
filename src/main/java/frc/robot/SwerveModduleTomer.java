@@ -3,6 +3,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -10,11 +11,16 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Tome_motor;
+import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 
-public class SwerveModduleTomer {
+public class SwerveModduleTomer extends GBSubsystem {
 
     TalonFX swerve;
     private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
@@ -29,6 +35,7 @@ public class SwerveModduleTomer {
     CANcoderConfiguration canfig = new CANcoderConfiguration();
 
     public SwerveModduleTomer(int id,double value) {
+        super();
         this.swerve = new TalonFX(id,CANBus.roboRIO());
         motor_limit();
         setCurrent_limit();
@@ -112,6 +119,66 @@ public class SwerveModduleTomer {
         target1 = target;
         config.withSlot0(new Slot0Configs().withKP(1.5));
         pid_thing.withPosition(target);
+    }
+    public void setvoltage(double vol){
+        swerve.setVoltage(vol);
+    }
+    public void mode_switcher(NeutralModeValue mode) {
+        config.MotorOutput.NeutralMode = mode;
+        swerve.getConfigurator().apply(config);
+
+    }
+    public void stopmodula(){
+        swerve.stopMotor();
+        drive.stop();
+    }
+    public void move(){
+        drive.move_half();
+    }
+    public boolean check(double deegres){
+        if (deegres == get_pos().getDegrees()){
+            return true;
+
+        }else {
+            return false;
+        }
+    }
+    public boolean check2(double rads){
+        if(rads == get_pos().getRadians()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void larp(double x,double y){
+        double rads = Math.atan2(x,y);
+        InstantCommand command2 = new InstantCommand(this::move);
+        command2.until(() -> check2(rads));
+        double power = Math.sqrt(Math.abs((x*x)+(y*y)));
+        new InstantCommand(()->setvoltage(11/power));
+
+    }
+    public void set2nmodes (NeutralModeValue mode){
+        new InstantCommand(()->mode_switcher(mode));
+        new InstantCommand(()->drive
+                .mode_switcher(mode));
+    }
+    public void stop(){
+        InstantCommand command1;
+        command1 = new InstantCommand(this::stopmodula);
+        setDefaultCommand(command1);
+    }
+    public void pointy_pointy(double deegrees){
+        InstantCommand command1 = new InstantCommand(this::move);
+        command1.until(() -> check(deegrees));
+    }
+    public void trigger(GenericHID genericHID,int button){
+        Trigger combo = new JoystickButton(genericHID,button);
+        InstantCommand command2 = new InstantCommand(drive::move_half);
+        combo.onTrue(command2);
+
+
     }
 
 

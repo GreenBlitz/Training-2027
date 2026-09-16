@@ -22,12 +22,12 @@ public class Tome_motor {
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
 	private PositionVoltage pid_thing = new PositionVoltage(1);
-	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
+	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(), new CANBus()) {
 	};
 	TalonFXConfiguration config = new TalonFXConfiguration();
 
 	public Tome_motor(int id) {
-		this.motor = new TalonFX(id,CANBus.roboRIO());
+		this.motor = new TalonFX(id, CANBus.roboRIO());
 		motor_limit();
 		setCurrent_limit();
 		frequncy_optimaztion();
@@ -36,14 +36,14 @@ public class Tome_motor {
 	}
 
 	public void motor_limit() {
-		config.HardwareLimitSwitch.ForwardLimitEnable=true;
+		config.HardwareLimitSwitch.ForwardLimitEnable = true;
 		config.HardwareLimitSwitch.ReverseLimitEnable = true;
 		config.HardwareLimitSwitch.ForwardLimitAutosetPositionValue = 5.0;
 		config.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = -3.0;
 	}
 
 	public void setCurrent_limit() {
-		config.CurrentLimits.StatorCurrentLimitEnable =true;
+		config.CurrentLimits.StatorCurrentLimitEnable = true;
 		config.CurrentLimits.StatorCurrentLimit = 40.0;
 	}
 
@@ -74,14 +74,14 @@ public class Tome_motor {
 		StatusSignal vel = motor.getVelocity();
 		vel.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
-		double double_vel = (vel.getValueAsDouble()*360);
+		double double_vel = (vel.getValueAsDouble() * 360);
 		return Rotation2d.fromDegrees(double_vel);
 
 
 	}
 
 	public Rotation2d get_pos() {
-		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(),motor.getVelocity());
+		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(), motor.getVelocity());
 		late.setUpdateFrequency(50);
 		Rotation2d rotatoin = Rotation2d.fromDegrees(late.getValueAsDouble());
 		return rotatoin;
@@ -97,6 +97,7 @@ public class Tome_motor {
 
 
 	}
+
 	public double get_cur() {
 
 		StatusSignal current = motor.getStatorCurrent();
@@ -105,11 +106,12 @@ public class Tome_motor {
 		return current.getValueAsDouble();
 
 	}
-	public void frequncy_optimaztion(){
-		StatusSignal current =motor.getStatorCurrent();
-		StatusSignal vel =motor.getVelocity();
-		StatusSignal voltage =motor.getMotorVoltage();
-		StatusSignal position =motor.getPosition();
+
+	public void frequncy_optimaztion() {
+		StatusSignal current = motor.getStatorCurrent();
+		StatusSignal vel = motor.getVelocity();
+		StatusSignal voltage = motor.getMotorVoltage();
+		StatusSignal position = motor.getPosition();
 		position.setUpdateFrequency(50);
 		vel.setUpdateFrequency(50);
 		voltage.setUpdateFrequency(50);
@@ -118,7 +120,7 @@ public class Tome_motor {
 
 	}
 
-	public void  logger() {
+	public void logger() {
 		Logger.recordOutput(path + "/current", get_cur());
 		Logger.recordOutput(path + "/VOL", get_vol());
 		Logger.recordOutput(path + "/VEL", get_vel());
@@ -152,6 +154,7 @@ public class Tome_motor {
 
 	}
 
+
 	public void set_pos(double pos) {
 		motor.setPosition(pos);
 	}
@@ -160,10 +163,11 @@ public class Tome_motor {
 		config.withSlot0(new Slot0Configs().withKP(1.5));
 		pid_thing.withPosition(target);
 	}
-	public void setvoltage(double vol){
+
+	public void setvoltage(double vol) {
 		motor.setVoltage(vol);
 	}
-		}
+}
 
 
 

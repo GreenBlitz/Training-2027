@@ -9,7 +9,7 @@ public abstract class GBSubsystem extends SubsystemBase {
 	private Command currentCommand;
 	private boolean isRunningIndependently;
 
-	public GBSubsystem(String logPath) {
+	public GBSubsystem() {
 		this.logPath = logPath;
 		this.currentCommand = Commands.none().withName("None");
 	}

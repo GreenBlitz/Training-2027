@@ -29,7 +29,7 @@ public class Roller extends GBSubsystem {
 		InputSignal<Rotation2d> velocitySignal,
 		IRequest<Double> voltageRequest
 	) {
-		super(logPath);
+		super();
 		this.motor = motor;
 		this.voltageSignal = voltageSignal;
 		this.currentSignal = currentSignal;
