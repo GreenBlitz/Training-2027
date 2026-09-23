@@ -34,15 +34,19 @@ public class SwerveModduleTomer extends GBSubsystem {
     public Double target1 = null;
     CANcoderConfiguration canfig = new CANcoderConfiguration();
 
-    public SwerveModduleTomer(int id,double value) {
+    public SwerveModduleTomer(int id1,int id2,Double value) {
         super();
-        this.swerve = new TalonFX(id,CANBus.roboRIO());
+        this.swerve = new TalonFX(id1,CANBus.roboRIO());
         motor_limit();
         setCurrent_limit();
         config.Feedback.SensorToMechanismRatio = value;
         parentDevice.optimizeBusUtilization(50);
         swerve.getConfigurator().apply(config);
     }
+
+
+
+
     public void SwitchDierctionswerve() {
         if (Clockwise_Positive == null) {
             Counter_Clockwise_Positive = null;

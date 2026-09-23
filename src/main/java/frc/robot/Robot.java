@@ -42,6 +42,7 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(21);
+	private final Modulesubsystem Modula = new Modulesubsystem(21,22,1.0);
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -141,4 +142,5 @@ public class Robot {
 	public Tome_motor getMotor() {
 		return motor;
 	}
+	public Modulesubsystem modula(){return Modula;}
 }

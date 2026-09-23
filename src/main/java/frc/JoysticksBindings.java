@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
+import frc.robot.Modulesubsystem;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.ChassisPowers;
 
@@ -51,7 +52,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(new InstantCommand(() ->robot.getMotor().move_half()));
+		usedJoystick.A.onTrue(new InstantCommand(() ->robot.getSwerve().));
 		usedJoystick.B.onTrue(new InstantCommand(() ->robot.getMotor().move_tenth()));
 		usedJoystick.Y.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
 		usedJoystick.X.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Coast)));

@@ -7,12 +7,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.hardware.Tome_motor;
-import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
-import frc.utils.brakestate.BrakeMode;
 import org.littletonrobotics.junction.Logger;
 
-public class Modulesubsystem{
+public class Modulesubsystem {
 
 
     private static SwerveModduleTomer modula;
@@ -21,10 +18,8 @@ public class Modulesubsystem{
     public String Path2;
     private TalonFX drive;
     private TalonFX steer;
-private Modulesubsystem(int id,double value){
-    steer = new TalonFX(12);
-    modula =new SwerveModduleTomer(id, value);
-    drive = new TalonFX(21);
+ Modulesubsystem(int id1,int id2,double value){
+    modula =new SwerveModduleTomer(id1,id2,value);
     Path1 = new String("drive1");
     Path2 = new String("steer1");
     Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
