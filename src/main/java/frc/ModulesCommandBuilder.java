@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.SmartJoystick;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModulesCommandBuilder {
@@ -60,6 +61,18 @@ public class ModulesCommandBuilder {
 		moduleAlon.setSteerNeutral(mode);
 	}
 
+	public InstantCommand setNeutralMode(boolean brake){
+		return new InstantCommand(()->{
+			NeutralModeValue neutralMode = brake?NeutralModeValue.Brake:NeutralModeValue.Coast;
+			setNeutralModeToLinear(neutralMode);
+			setNeutralModeToSteer(neutralMode);
+		},moduleAlon);
+	}
+
+	public RunCommand manualDriveCommand(Supplier<Double> power){
+		return new RunCommand(()->{moduleAlon.linearSetPower(power.get());},moduleAlon);
+	}
+
 	public void linearWithStickValue(SmartJoystick joystick, Axis axis) {
 		moduleAlon.linearSetPower(joystick.getAxisValue(axis));
 	}
@@ -109,6 +122,15 @@ public class ModulesCommandBuilder {
 				new ParallelCommandGroup(
 				printArmOpening(),
 				driveDistanceCommand(Rotation2d.fromRotations(2),Rotation2d.fromDegrees(-90)))
+		);
+	}
+
+	public DeferredCommand realTimeChoice(Supplier<Boolean> var){
+		return new DeferredCommand(
+				()->{return var.get()?
+						driveDistanceCommand(Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(90)):
+						driveDistanceCommand(Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(-90));
+				}, Set.of(moduleAlon)
 		);
 	}
 
