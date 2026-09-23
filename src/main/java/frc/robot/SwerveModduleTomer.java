@@ -22,13 +22,13 @@ import org.littletonrobotics.junction.Logger;
 
 public class SwerveModduleTomer extends GBSubsystem {
 
-    TalonFX swerve;
+    static TalonFX swerve;
     private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
     private InvertedValue Counter_Clockwise_Positive = null;
     private PositionVoltage pid_thing = new PositionVoltage(1);
     public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
     };
-    private final Tome_motor drive = new Tome_motor(21);
+    private static final Tome_motor drive = new Tome_motor(21);
     TalonFXConfiguration config = new TalonFXConfiguration();
     public Double targetvoltage = null;
     public Double target1 = null;
@@ -180,6 +180,23 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 
     }
+    public void movepower(double power){
+        drive.move(power);
+    }
+    public boolean checkrotations(double rotation){
+        if(drive.get_pos().getRotations()==rotation){
+            return true;
+        }else return false;
+
+    }
+    public boolean checkrotations2(double rotation){
+        if(swerve.getPosition().getValueAsDouble()==rotation){
+            return true;
+        }else return false;
+
+    }
+
+
 
 
 

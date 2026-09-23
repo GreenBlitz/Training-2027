@@ -167,6 +167,9 @@ public class Tome_motor {
 	public void setvoltage(double vol) {
 		motor.setVoltage(vol);
 	}
+    public void move(double power){
+        motor.set(power);
+    }
 }
 
 
