@@ -3,9 +3,8 @@ package frc;
 import javax.sound.midi.*;
 import java.util.HashSet;
 
-public class Midi {
+public class Midi{
     private HashSet<Byte> pressedKeys;
-    private int lastPressed;
     private static Transmitter getFirstMidiTransmitter() {
         Transmitter trans = null;
         try {
@@ -28,7 +27,6 @@ public class Midi {
             public void send(MidiMessage message, long timeStamp) {
                 if (message.getMessage()[0]==-122){
                     pressedKeys.add(message.getMessage()[1]);
-                    lastPressed=message.getMessage()[1];
                 } else if (message.getMessage()[0]==-128){
                     pressedKeys.remove(message.getMessage()[1]);
                 }
@@ -43,13 +41,5 @@ public class Midi {
 
     public Midi(){
         this(getFirstMidiTransmitter());
-    }
-
-    public boolean isPressed() {
-        return !pressedKeys.isEmpty();
-    }
-
-    public int getLastPressed(){
-        return lastPressed;
     }
 }

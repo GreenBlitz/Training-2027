@@ -3,6 +3,7 @@ package frc;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -70,6 +71,7 @@ public class AlonFX {
 		FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
 		feedbackConfigs.SensorToMechanismRatio = gearRatio;
 		configuration.Feedback = feedbackConfigs;
+		return  configuration;
 
 	}
 	private boolean isMotorConnected() {
@@ -101,6 +103,10 @@ public class AlonFX {
 		motor.setControl(positionVoltage);
 	}
 
+	public void playFreq(double freq){
+		MusicTone musicTone = new MusicTone(freq);
+		motor.setControl(musicTone);
+	}
 
 	public void moveAtHalfPower() {
 		setPower(0.5);
