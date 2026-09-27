@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -79,8 +80,9 @@ public class Tome_motor {
 	}
 
 	public Rotation2d get_pos() {
-		StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(), motor.getVelocity());
-		late.setUpdateFrequency(50);
+		StatusSignal late;
+        late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(), motor.getVelocity());
+        late.setUpdateFrequency(50);
 		Rotation2d rotatoin = Rotation2d.fromDegrees(late.getValueAsDouble());
 		return rotatoin;
 
@@ -168,7 +170,11 @@ public class Tome_motor {
     public void move(double power){
         motor.set(power);
     }
+	public TalonFX getMotor1(){
+		return motor;
+	}
 }
+
 
 
 

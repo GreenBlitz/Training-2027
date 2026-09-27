@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.hardware.Tome_motor;
 import org.littletonrobotics.junction.Logger;
 
 public class Modulesubsystem {
@@ -23,7 +24,10 @@ public class Modulesubsystem {
     Path1 = new String("drive1");
     Path2 = new String("steer1");
     Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
+    steer = modula.getswerve();
+    drive = modula.getdrive2();
     steer.getConfigurator().apply(pidcofing);
+
 }
 
 public void LogVarubles() {
@@ -42,7 +46,7 @@ public void LogVarubles() {
 }
 public Double isconnected1(TalonFX motor){
     if(motor.isConnected()){
-        return (0.1);
+        return (1.0);
     }else {
         return (0.0);
     }

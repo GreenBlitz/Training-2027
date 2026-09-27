@@ -21,13 +21,12 @@ import org.littletonrobotics.junction.Logger;
 
 
 public class SwerveModduleTomer extends GBSubsystem {
-
-    static TalonFX swerve;
+    public static Tome_motor drive;
+    public static TalonFX swerve;
     private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
     private InvertedValue Counter_Clockwise_Positive = null;
     private PositionVoltage pid_thing = new PositionVoltage(1);
 
-    private static final Tome_motor drive = new Tome_motor(21);
     TalonFXConfiguration config = new TalonFXConfiguration();
     public Double targetvoltage = null;
     public Double target1 = null;
@@ -35,7 +34,8 @@ public class SwerveModduleTomer extends GBSubsystem {
 
     public SwerveModduleTomer(int id1,int id2,Double value) {
         super();
-        this.swerve = new TalonFX(id1,CANBus.roboRIO());
+        drive = new Tome_motor(id2);
+        swerve = new TalonFX(id1,CANBus.roboRIO());
         motor_limit();
         setCurrent_limit();
         config.Feedback.SensorToMechanismRatio = value;
@@ -197,6 +197,16 @@ public class SwerveModduleTomer extends GBSubsystem {
             return true;
         }else return false;
 
+    }
+    public TalonFX getswerve(){
+        return swerve;
+
+    }
+    public Tome_motor getdrive(){
+        return drive;
+    }
+    public TalonFX getdrive2(){
+        return drive.getMotor1();
     }
 
 
