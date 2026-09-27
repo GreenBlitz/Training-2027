@@ -13,7 +13,7 @@ public class Modulesubsystem {
 
 
     private static SwerveModduleTomer modula;
-    private PositionVoltage pid_thing = new PositionVoltage(1);
+    private final PositionVoltage pid_thing = new PositionVoltage(1);
     public String Path1;
     public String Path2;
     private TalonFX drive;

@@ -22,8 +22,6 @@ public class Tome_motor {
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
 	private PositionVoltage pid_thing = new PositionVoltage(1);
-	public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(), new CANBus()) {
-	};
 	TalonFXConfiguration config = new TalonFXConfiguration();
 
 	public Tome_motor(int id) {
@@ -31,7 +29,7 @@ public class Tome_motor {
 		motor_limit();
 		setCurrent_limit();
 		frequncy_optimaztion();
-		parentDevice.optimizeBusUtilization(50);
+		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
 	}
 

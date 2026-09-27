@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 
 public abstract class GBSubsystem extends SubsystemBase {
 
-	private final String logPath;
+	private String logPath;
 	private Command currentCommand;
 	private boolean isRunningIndependently;
 

@@ -26,8 +26,7 @@ public class SwerveModduleTomer extends GBSubsystem {
     private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
     private InvertedValue Counter_Clockwise_Positive = null;
     private PositionVoltage pid_thing = new PositionVoltage(1);
-    public ParentDevice parentDevice = new ParentDevice(21, parentDevice.toString(),new CANBus()) {
-    };
+
     private static final Tome_motor drive = new Tome_motor(21);
     TalonFXConfiguration config = new TalonFXConfiguration();
     public Double targetvoltage = null;
@@ -40,7 +39,7 @@ public class SwerveModduleTomer extends GBSubsystem {
         motor_limit();
         setCurrent_limit();
         config.Feedback.SensorToMechanismRatio = value;
-        parentDevice.optimizeBusUtilization(50);
+        swerve.optimizeBusUtilization(50);
         swerve.getConfigurator().apply(config);
     }
 
