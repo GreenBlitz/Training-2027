@@ -71,8 +71,7 @@ public class AlonFX {
 		FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
 		feedbackConfigs.SensorToMechanismRatio = gearRatio;
 		configuration.Feedback = feedbackConfigs;
-		return  configuration;
-
+		return configuration;
 	}
 	private boolean isMotorConnected() {
 		return motor.isConnected();
