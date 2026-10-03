@@ -8,9 +8,11 @@ import java.util.*;
 
 public class MotorSpeaker extends GBSubsystem {
     private AlonFX[] motors;
-    Queue<Integer> unusedMotors;
-    Map<Byte,Integer> noteToMotor;
-    Queue<Byte> noteQueue;
+    private Queue<Integer> unusedMotors;
+    private Map<Byte,Integer> noteToMotor;
+    private Queue<Byte> noteQueue;
+    private MotorSpeakerCommandBuilder commandBuilder;
+
     public MotorSpeaker(AlonFX... motors){
         super("motorSpeaker");
         this.motors=motors;
@@ -19,6 +21,11 @@ public class MotorSpeaker extends GBSubsystem {
         for (int i=0; i<motors.length; i++){
             unusedMotors.add(i);
         }
+        commandBuilder = new MotorSpeakerCommandBuilder(this);
+    }
+
+    public MotorSpeakerCommandBuilder getCommandBuilder(){
+        return commandBuilder;
     }
     public MotorSpeaker(CANBus canBus, int... ids){
         this(generateMotorFromIDs(canBus, ids));

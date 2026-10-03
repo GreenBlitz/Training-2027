@@ -52,12 +52,11 @@ public class JoysticksBindings {
 	}
 
 	private static void mainJoystickButtons(Robot robot) {
-		System.out.println("JSBINDINGSAHH");
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		robot.getModuleAlon().setDefaultJoystick(usedJoystick);
-		Trigger comboButtons = usedJoystick.A.and(usedJoystick.B);
-		comboButtons.onTrue(robot.getModuleAlon().comboCommand());
+		Midi midi = new Midi();
+		robot.getMotorSpeakerCommandBuilder().bindMidi(midi);
+		robot.getMotorSpeakerCommandBuilder().playNotes().execute();
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
