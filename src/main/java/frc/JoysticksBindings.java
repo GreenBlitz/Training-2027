@@ -54,9 +54,16 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		Midi midi = new Midi();
-		robot.getMotorSpeakerCommandBuilder().bindMidi(midi);
-		robot.getMotorSpeakerCommandBuilder().playNotes().execute();
+		//Midi midi = Midi.firstMidi();
+		//robot.getMotorSpeakerCommandBuilder().bindMidi(midi);
+		//robot.getMotorSpeakerCommandBuilder().playNotes().execute();
+		usedJoystick.A.onTrue(robot.getMotorSpeaker().getCommandBuilder().playNotes());
+		usedJoystick.B.onTrue(new InstantCommand(()->{
+			robot.getMotorSpeaker().playNote((byte)48);
+		}));
+		usedJoystick.X.onTrue(new InstantCommand(()->{
+			robot.getMotorSpeaker().stopNote((byte)48);
+		}));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

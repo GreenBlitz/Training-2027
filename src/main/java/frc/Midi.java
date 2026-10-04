@@ -28,7 +28,7 @@ public class Midi{
         Receiver receiver = new Receiver() {
             @Override
             public void send(MidiMessage message, long timeStamp) {
-                if (message.getMessage()[0]==-122){
+                if (message.getMessage()[0]==-112){
                     pressedKeys.add(message.getMessage()[1]);
                     pressNote.accept(message.getMessage()[1]);
                 } else if (message.getMessage()[0]==-128){
@@ -42,6 +42,8 @@ public class Midi{
 
             }
         };
+        trans.setReceiver(receiver);
+        this.pressedKeys=new HashSet<>();
     }
 
     public void withPressNote(Consumer<Byte> pressNote){
@@ -52,7 +54,9 @@ public class Midi{
         this.releaseNote=releaseNote;
     }
 
-    public Midi(){
-        this(getFirstMidiTransmitter());
+    public static Midi firstMidi(){
+        System.out.println("firstMidi");
+        return new Midi(getFirstMidiTransmitter());
+
     }
 }

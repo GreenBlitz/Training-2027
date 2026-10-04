@@ -95,8 +95,8 @@ public class Robot {
 		configureBrakeStateChooser();
 	}
 
-	public MotorSpeakerCommandBuilder getMotorSpeakerCommandBuilder(){
-		return motorSpeaker.getCommandBuilder();
+	public MotorSpeaker getMotorSpeaker(){
+		return motorSpeaker;
 	}
 
 	public void updateSubsystems() {
