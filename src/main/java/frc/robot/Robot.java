@@ -9,7 +9,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.*;
+import frc.ModulesCommandBuilder;
+import frc.RobotManager;
+import frc.ModuleAlon;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -41,8 +43,8 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
-	private final ModulesCommandBuilder moduleAlon;
 	private final MotorSpeaker motorSpeaker;
+	private final ModuleAlon moduleAlon;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -64,8 +66,8 @@ public class Robot {
 			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
-		this.moduleAlon = new ModulesCommandBuilder(new ModuleAlon(67, 67, 6767, 1, 1, RobotConstants.steerKp,2,new CANBus("rio"), "/motor"));
-		this.motorSpeaker = new MotorSpeaker(new CANBus("rio"),0,10);
+		this.moduleAlon = new ModuleAlon(10, 22, 1, 1, RobotConstants.steerKp,2,new CANBus("rio"), "/motor");
+
 		this.limelights = List.of();
 		limelights.forEach(
 			limelight -> limelight.setMT1StdDevsCalculation(
@@ -125,7 +127,7 @@ public class Robot {
 		return poseEstimator;
 	}
 
-	public ModulesCommandBuilder getModuleAlon() {
+	public ModuleAlon getModuleAlon() {
 		return moduleAlon;
 	}
 
