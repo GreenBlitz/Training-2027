@@ -109,7 +109,8 @@ public void setposition(Rotation2d position){
 }
 
 public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
-    return Commands.sequence(
+    DriveDistanceCommand(degrees,rotations).addRequirements(modula);
+     return Commands.sequence(
     new InstantCommand(modula::stopmodula),
     new InstantCommand(()->modula.pointy_pointy(degrees.getDegrees())),
             new InstantCommand(modula::move)
@@ -126,9 +127,10 @@ public Command brake(boolean brake){
     }
 }
 public Command manualDriveCommand(Double power){
-    return new RunCommand(()->modula.movepower(power));
+     manualDriveCommand(power).addRequirements(modula);return new RunCommand(()->modula.movepower(power));
 }
 public Command longnamecommand(){
+     longnamecommand().addRequirements(modula);
     return Commands.sequence(
             new InstantCommand(modula::stopmodula),
             new InstantCommand(()->modula.pointy_pointy(0)),
