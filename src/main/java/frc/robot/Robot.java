@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.ModulesCommandBuilder;
+import frc.MotorSpeaker;
 import frc.RobotManager;
 import frc.ModuleAlon;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -48,6 +49,8 @@ public class Robot {
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
+
+		motorSpeaker = new MotorSpeaker(new CANBus("rio"),0,10);
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
