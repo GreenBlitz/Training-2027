@@ -11,11 +11,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
+import frc.robot.hardware.interfaces.IMotor;
+import frc.robot.hardware.interfaces.InputSignal;
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 
-public class AlonFX {
+public class AlonFX implements IMotor {
 
 	private final TalonFX motor;
 	private InvertedValue direction;
@@ -84,6 +86,21 @@ public class AlonFX {
 		motor.stopMotor();
 	}
 
+	@Override
+	public void updateSimulation() {
+	}
+
+	@Override
+	public void setBrake(boolean brake) {
+		NeutralModeValue neutralMode = brake?NeutralModeValue.Brake:NeutralModeValue.Coast;
+		setNeutralMode(neutralMode);
+	}
+
+	@Override
+	public void stop() {
+		stopMotor();
+	}
+
 	public void setPower(double amount) {
 		motor.set(amount);
 	}
@@ -135,6 +152,7 @@ public class AlonFX {
 
 	public void setNeutralMode(NeutralModeValue neutralMode) {
 		MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+		motor.getConfigurator().refresh(motorOutputConfigs);
 		motorOutputConfigs.withNeutralMode(neutralMode);
 		motor.getConfigurator().apply(motorOutputConfigs);
 	}
@@ -168,4 +186,16 @@ public class AlonFX {
 		return motor.getClosedLoopReference().getValueAsDouble();
 	}
 
+	@Override
+	public boolean isConnected() {
+		return isMotorConnected();
+	}
+
+	@Override
+	public void updateInputs(InputSignal<?>... inputSignals) {
+		position.refresh();
+		velocity.refresh();
+		current.refresh();
+		position.refresh();
+	}
 }
