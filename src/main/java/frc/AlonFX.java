@@ -101,6 +101,7 @@ public class AlonFX implements IMotor {
 		stopMotor();
 	}
 
+	@Override
 	public void setPower(double amount) {
 		motor.set(amount);
 	}
@@ -193,9 +194,6 @@ public class AlonFX implements IMotor {
 
 	@Override
 	public void updateInputs(InputSignal<?>... inputSignals) {
-		position.refresh();
-		velocity.refresh();
-		current.refresh();
-		position.refresh();
+
 	}
 }
