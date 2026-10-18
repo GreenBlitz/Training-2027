@@ -177,6 +177,13 @@ public class Tome_motor {
 	public TalonFX getMotor1(){
 		return motor;
 	}
+	public Double isconnected1(){
+		if(motor.isConnected()){
+			return (1.0);
+		}else {
+			return (0.0);
+		}
+	}
 }
 
 

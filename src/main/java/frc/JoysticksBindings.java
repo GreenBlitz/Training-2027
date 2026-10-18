@@ -2,6 +2,7 @@ package frc;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
@@ -53,26 +54,15 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(new InstantCommand(() ->robot.modula().DriveDistanceCommand(Rotation2d.fromDegrees(90),Rotation2d.fromRotations(4))));
-		usedJoystick.B.onTrue(new InstantCommand(() ->robot.modula().manualDriveCommand(11.0)));
+		usedJoystick.A.onTrue(robot.modula().DriveDistanceCommand(Rotation2d.fromDegrees(90),Rotation2d.fromRotations(4)));
+		usedJoystick.B.onTrue(robot.modula().manualDriveCommand(11.0));
 		usedJoystick.Y.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
 		usedJoystick.X.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
-		usedJoystick.POV_DOWN.onTrue(new InstantCommand(() ->robot.modula().longnamecommand()));
-		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() ->robot.getMotor().SwitchDierction()));
+		usedJoystick.POV_DOWN.onTrue(robot.modula().longnamecommand());
+		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() ->robot.getMotor().move_half()));
 		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(-2.0)));
 		usedJoystick.POV_UP.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(2.0)));
 		usedJoystick.L1.onTrue(new InstantCommand(() ->robot.getMotor().stop()));
-
-
-
-
-
-
-
-
-
-
-
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

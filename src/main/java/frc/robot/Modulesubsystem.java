@@ -7,34 +7,30 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.hardware.Tome_motor;
 import org.littletonrobotics.junction.Logger;
 
-public class Modulesubsystem {
+public class Modulesubsystem extends SwerveModduleTomer  {
 
 
-    private static SwerveModduleTomer modula;
     private final PositionVoltage pid_thing = new PositionVoltage(1);
     public String Path1;
     public String Path2;
-    private TalonFX drive;
-    private TalonFX steer;
- Modulesubsystem(int id1,int id2,double value){
-    modula =new SwerveModduleTomer(id1,id2,value);
+    Modulesubsystem(){
+
     Path1 = new String("drive1");
     Path2 = new String("steer1");
     Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
-    steer = modula.getswerve();
-    drive = modula.getdrive2();
+    steer = getSteer();
+    drive = getdrive();
     steer.getConfigurator().apply(pidcofing);
 
 }
 
 public void LogVarubles() {
-    Logger.recordOutput(Path1 + "/velocity", Rotation2d.fromDegrees(drive.getVelocity().getValueAsDouble()));
-    Logger.recordOutput(Path1 + "/driveVoltage", drive.getMotorVoltage().getValueAsDouble());
-    Logger.recordOutput(Path1 + "/position", Rotation2d.fromDegrees(drive.getVelocity().getValueAsDouble()));
-    Logger.recordOutput(Path1 + "isconnected",isconnected1(drive));
+    Logger.recordOutput(Path1 + "/velocity", Rotation2d.fromDegrees(drive.get_vel().getRotations()));
+    Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
+    Logger.recordOutput(Path1 + "/position", Rotation2d.fromDegrees(drive.get_pos().getRotations()));
+    Logger.recordOutput(Path1 + "isconnected",drive.isconnected1());
     Logger.recordOutput(Path2 + "/velocity", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
     Logger.recordOutput(Path2 + "/driveVoltage", steer.getMotorVoltage().getValueAsDouble());
     Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
@@ -107,44 +103,48 @@ public void movetoposition(Rotation2d postion){
 public void setposition(Rotation2d position){
     steer.setPosition(position.getDegrees());
 }
-
 public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
-    return Commands.sequence(
-    new InstantCommand(modula::stopmodula),
-    new InstantCommand(()->modula.pointy_pointy(degrees.getDegrees())),
-            new RunCommand(modula::move)
-    .until(()-> modula.check(degrees.getDegrees())),
-    new InstantCommand(modula::stopmodula)
+    DriveDistanceCommand(degrees,rotations).addRequirements(this);
+     return Commands.sequence(
+    new InstantCommand(this::stopmodula),
+    new InstantCommand(()->this.pointy_pointy(degrees.getDegrees())),
+            new RunCommand(this::move)
+    .until(()-> this.check(degrees.getDegrees())),
+    new InstantCommand(this::stopmodula)
     );
 }
 public Command brake(boolean brake){
     if (brake = true)
-    return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Brake));
+    return new InstantCommand(()->this.mode_switcher(NeutralModeValue.Brake));
     else {
-        return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Coast));
+        return new InstantCommand(()->this.mode_switcher(NeutralModeValue.Coast));
 
     }
 }
+@Override
 public Command manualDriveCommand(Double power){
-     manualDriveCommand(power).addRequirements(modula);
-    return new RunCommand(()->modula.movepower(power));
+     manualDriveCommand(power).addRequirements(this);
+    return new RunCommand(()->this.movepower(power));
 }
-public Command longnamecommand(){
-     longnamecommand().addRequirements(modula);
-    return Commands.sequence(
-            new InstantCommand(modula::stopmodula),
-            new InstantCommand(()->modula.pointy_pointy(0)),
-            new RunCommand(modula::move)
-                    .until(()-> modula.checkrotations2(2.0)),
-                            new InstantCommand(()->modula.pointy_pointy(90)),
-                            new RunCommand(modula::move)
-                                    .until(()-> modula.checkrotations2(2.0)),
-                                            new InstantCommand(()->modula.pointy_pointy(180)),
-                                            new RunCommand(modula::move)
-                                                    .until(()-> modula.checkrotations2(2.0)),
-                                                            new InstantCommand(()->modula.pointy_pointy(-90)),
-                                                            new RunCommand(modula::move)
-                                                                    .until(()-> modula.checkrotations2(2.0))
+
+
+    @Override
+    public Command longnamecommand(){
+     longnamecommand().addRequirements(this);
+     return Commands.sequence(
+            new InstantCommand(this::stopmodula),
+            new InstantCommand(()->this.pointy_pointy(0)),
+            new RunCommand(this::move)
+                    .until(()-> this.checkrotations2(2.0)),
+                            new InstantCommand(()->this.pointy_pointy(90)),
+                            new RunCommand(this::move)
+                                    .until(()-> this.checkrotations2(2.0)),
+                                            new InstantCommand(()->this.pointy_pointy(180)),
+                                            new RunCommand(this::move)
+                                                    .until(()-> this.checkrotations2(2.0)),
+                                                            new InstantCommand(()->this.pointy_pointy(-90)),
+                                                            new RunCommand(this::move)
+                                                                    .until(()-> this.checkrotations2(2.0))
     );
 
 
@@ -152,6 +152,9 @@ public Command longnamecommand(){
 
 
 }
-
+    @Override
+    public Command asSubsystemCommand(Command command, String commandName) {
+        return super.asSubsystemCommand(command, commandName);
+    }
 }
 

@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.Tome_motor;
@@ -42,7 +44,8 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(10);
-	private final Modulesubsystem Modula = new Modulesubsystem(10,11,1.0);
+	private final SwerveModduleTomer Modula = new SwerveModduleTomer();
+
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -142,5 +145,5 @@ public class Robot {
 	public Tome_motor getMotor() {
 		return motor;
 	}
-	public Modulesubsystem modula(){return Modula;}
+	public SwerveModduleTomer modula(){return modula();}
 }
