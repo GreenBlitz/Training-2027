@@ -112,7 +112,7 @@ public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
     return Commands.sequence(
     new InstantCommand(modula::stopmodula),
     new InstantCommand(()->modula.pointy_pointy(degrees.getDegrees())),
-            new InstantCommand(modula::move)
+            new RunCommand(modula::move)
     .until(()-> modula.check(degrees.getDegrees())),
     new InstantCommand(modula::stopmodula)
     );
@@ -126,22 +126,25 @@ public Command brake(boolean brake){
     }
 }
 public Command manualDriveCommand(Double power){
-    return new RunCommand(()->modula.movepower(power));
+    manualDriveCommand(power).addRequirements();
+     return new RunCommand(()->modula.movepower(power));
+
 }
 public Command longnamecommand(){
+     longnamecommand().addRequirements();
     return Commands.sequence(
             new InstantCommand(modula::stopmodula),
             new InstantCommand(()->modula.pointy_pointy(0)),
-            new InstantCommand(modula::move)
+            new RunCommand(modula::move)
                     .until(()-> modula.checkrotations2(2.0)),
                             new InstantCommand(()->modula.pointy_pointy(90)),
-                            new InstantCommand(modula::move)
+                            new RunCommand(modula::move)
                                     .until(()-> modula.checkrotations2(2.0)),
                                             new InstantCommand(()->modula.pointy_pointy(180)),
-                                            new InstantCommand(modula::move)
+                                            new RunCommand(modula::move)
                                                     .until(()-> modula.checkrotations2(2.0)),
                                                             new InstantCommand(()->modula.pointy_pointy(-90)),
-                                                            new InstantCommand(modula::move)
+                                                            new RunCommand(modula::move)
                                                                     .until(()-> modula.checkrotations2(2.0))
     );
 
