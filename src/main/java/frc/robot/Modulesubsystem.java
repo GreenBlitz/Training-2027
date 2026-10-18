@@ -126,12 +126,11 @@ public Command brake(boolean brake){
     }
 }
 public Command manualDriveCommand(Double power){
-    manualDriveCommand(power).addRequirements();
-     return new RunCommand(()->modula.movepower(power));
-
+     manualDriveCommand(power).addRequirements(modula);
+    return new RunCommand(()->modula.movepower(power));
 }
 public Command longnamecommand(){
-     longnamecommand().addRequirements();
+     longnamecommand().addRequirements(modula);
     return Commands.sequence(
             new InstantCommand(modula::stopmodula),
             new InstantCommand(()->modula.pointy_pointy(0)),
