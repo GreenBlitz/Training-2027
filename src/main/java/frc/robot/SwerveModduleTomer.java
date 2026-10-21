@@ -152,6 +152,10 @@ public class SwerveModduleTomer extends GBSubsystem {
     public void move() {
         drive.move_half();
     }
+    public void steer() {
+        steer.set(1.0);
+    }
+
 
     public boolean check(double deegres) {
         if (deegres == get_pos().getDegrees()) {
@@ -161,14 +165,17 @@ public class SwerveModduleTomer extends GBSubsystem {
             return false;
         }
     }
-
-    public boolean check2(double rads) {
-        if (rads == get_pos().getRadians()) {
+    public boolean check2(double rotations) {
+        if (rotations == get_pos().getRotations()) {
             return true;
+
         } else {
             return false;
         }
     }
+
+
+
 
     public void larp(double x, double y) {
         double rads = Math.atan2(x, y);

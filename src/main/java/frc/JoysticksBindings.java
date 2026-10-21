@@ -54,11 +54,11 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(robot.getCommands1().getDriveDistanceCommand(Rotation2d.fromDegrees(90),Rotation2d.fromRotations(4)));
-		usedJoystick.B.onTrue(robot.getCommands1().getManualDriveCommand(11.0));
+		usedJoystick.A.onTrue(robot.getSubsystem().DriveDistanceCommand(Rotation2d.fromDegrees(90),Rotation2d.fromRotations(4)));
+		usedJoystick.B.whileTrue(robot.getSubsystem().manualDriveCommand(0.9));
 		usedJoystick.Y.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
 		usedJoystick.X.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
-		usedJoystick.POV_DOWN.onTrue(robot.getCommands1().getLongNameCommnad());
+		usedJoystick.POV_DOWN.onTrue(robot.getSubsystem().longnamecommand());
 		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() ->robot.getMotor().move_half()));
 		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(-2.0)));
 		usedJoystick.POV_UP.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(2.0)));

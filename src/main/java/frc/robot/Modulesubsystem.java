@@ -7,34 +7,40 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.hardware.Tome_motor;
+import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class Modulesubsystem extends SwerveModduleTomer  {
+public class Modulesubsystem extends GBSubsystem {
 
 
     private final PositionVoltage pid_thing = new PositionVoltage(1);
     public String Path1;
     public String Path2;
+    TalonFX steer;
+    Tome_motor drive;
+    private SwerveModduleTomer modula = new SwerveModduleTomer();
     Modulesubsystem(){
 
     Path1 = new String("drive1");
     Path2 = new String("steer1");
     Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
-    steer = getSteer();
-    drive = getdrive();
+    steer = SwerveModduleTomer.getSteer();
+    drive = SwerveModduleTomer.getdrive();
     steer.getConfigurator().apply(pidcofing);
 
-}
 
-public void LogVarubles() {
-    Logger.recordOutput(Path1 + "/velocity", Rotation2d.fromDegrees(drive.get_vel().getRotations()));
-    Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
-    Logger.recordOutput(Path1 + "/position", Rotation2d.fromDegrees(drive.get_pos().getRotations()));
-    Logger.recordOutput(Path1 + "isconnected",drive.isconnected1());
-    Logger.recordOutput(Path2 + "/velocity", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
-    Logger.recordOutput(Path2 + "/driveVoltage", steer.getMotorVoltage().getValueAsDouble());
-    Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
-    Logger.recordOutput(Path2 + "isconnected",isconnected1(steer));
+}
+    @Override
+    public void subsystemPeriodic() {
+        Logger.recordOutput(Path1 + "/velocity", Rotation2d.fromDegrees(drive.get_vel().getRotations()));
+        Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
+        Logger.recordOutput(Path1 + "/position", Rotation2d.fromDegrees(drive.get_pos().getRotations()));
+        Logger.recordOutput(Path1 + "isconnected",drive.isconnected1());
+        Logger.recordOutput(Path2 + "/velocity", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
+        Logger.recordOutput(Path2 + "/driveVoltage", steer.getMotorVoltage().getValueAsDouble());
+        Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
+        Logger.recordOutput(Path2 + "isconnected",isconnected1(steer));
 
 
 
@@ -105,46 +111,51 @@ public void setposition(Rotation2d position){
 }
 
 public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
-    DriveDistanceCommand(degrees,rotations).addRequirements(this);
-     return Commands.sequence(
-    new InstantCommand(this::stopmodula),
-    new InstantCommand(()->this.pointy_pointy(degrees.getDegrees())),
-            new RunCommand(this::move)
-    .until(()-> this.check(degrees.getDegrees())),
-    new InstantCommand(this::stopmodula)
+        SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+        commandGroup.addRequirements(modula);
+     commandGroup.addCommands(
+    new InstantCommand(modula::stopmodula),
+    new InstantCommand(()->modula.pointy_pointy(degrees.getDegrees())),
+            new RunCommand(modula::move)
+    .until(()-> modula.checkrotations2(rotations.getRotations())),
+    new InstantCommand(modula::stopmodula)
     );
+     return commandGroup;
 }
 public Command brake(boolean brake){
-    if (brake = true)
-    return new InstantCommand(()->this.mode_switcher(NeutralModeValue.Brake));
+    if (brake)
+    return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Brake));
     else {
-        return new InstantCommand(()->this.mode_switcher(NeutralModeValue.Coast));
+        return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Coast));
 
     }
 }
 public Command manualDriveCommand(Double power){
-     manualDriveCommand(power).addRequirements(this);
-    return new RunCommand(()->this.movepower(power));
+     Command command = new RunCommand(()->modula.movepower(power));
+     command.addRequirements(modula);
+        return command;
 }
 
 
     public Command longnamecommand(){
-     longnamecommand().addRequirements(this);
-     return Commands.sequence(
-            new InstantCommand(this::stopmodula),
-            new InstantCommand(()->this.pointy_pointy(0)),
-            new RunCommand(this::move)
-                    .until(()-> this.checkrotations2(2.0)),
-                            new InstantCommand(()->this.pointy_pointy(90)),
-                            new RunCommand(this::move)
-                                    .until(()-> this.checkrotations2(2.0)),
-                                            new InstantCommand(()->this.pointy_pointy(180)),
-                                            new RunCommand(this::move)
-                                                    .until(()-> this.checkrotations2(2.0)),
-                                                            new InstantCommand(()->this.pointy_pointy(-90)),
-                                                            new RunCommand(this::move)
-                                                                    .until(()-> this.checkrotations2(2.0))
+        SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+        commandGroup.addRequirements(modula);
+     commandGroup.addCommands(
+            new InstantCommand(modula::stopmodula),
+            new InstantCommand(()->modula.pointy_pointy(0)),
+            new RunCommand(modula::move)
+                    .until(()-> modula.checkrotations2(2.0)),
+                            new InstantCommand(()->modula.pointy_pointy(90)),
+                            new RunCommand(modula::move)
+                                    .until(()-> modula.checkrotations2(2.0)),
+                                            new InstantCommand(()->modula.pointy_pointy(180)),
+                                            new RunCommand(modula::move)
+                                                    .until(()-> modula.checkrotations2(2.0)),
+                                                            new InstantCommand(()->modula.pointy_pointy(-90)),
+                                                            new RunCommand(modula::move)
+                                                                    .until(()-> modula.checkrotations2(2.0))
     );
+     return commandGroup;
 
 
 
@@ -155,5 +166,7 @@ public Command manualDriveCommand(Double power){
     public Command asSubsystemCommand(Command command, String commandName) {
         return super.asSubsystemCommand(command, commandName);
     }
+
+
 }
 

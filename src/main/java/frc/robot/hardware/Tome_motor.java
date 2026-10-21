@@ -173,6 +173,7 @@ public class Tome_motor {
 	}
     public void move(double power){
         motor.set(power);
+
     }
 	public TalonFX getMotor1(){
 		return motor;

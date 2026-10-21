@@ -101,11 +101,11 @@ public class Robot {
 	public void updateSubsystems() {
 		motor.logger();
 		swerve.update();
+		modula().LogVarubles();
 	}
 
 	public void periodic() {
 		BusChain.refreshAll();
-
 		updateSubsystems();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
@@ -148,7 +148,7 @@ public class Robot {
 		return motor;
 	}
 	public SwerveModduleTomer modula(){return modula();}
-	public ComandBuilder getCommands1(){
-		return builder;
+	public Modulesubsystem getSubsystem(){
+		return modula1;
 	}
 }
