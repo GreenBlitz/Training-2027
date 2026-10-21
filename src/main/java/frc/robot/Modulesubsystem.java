@@ -103,6 +103,7 @@ public void movetoposition(Rotation2d postion){
 public void setposition(Rotation2d position){
     steer.setPosition(position.getDegrees());
 }
+
 public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
     DriveDistanceCommand(degrees,rotations).addRequirements(this);
      return Commands.sequence(
@@ -121,14 +122,12 @@ public Command brake(boolean brake){
 
     }
 }
-@Override
 public Command manualDriveCommand(Double power){
      manualDriveCommand(power).addRequirements(this);
     return new RunCommand(()->this.movepower(power));
 }
 
 
-    @Override
     public Command longnamecommand(){
      longnamecommand().addRequirements(this);
      return Commands.sequence(

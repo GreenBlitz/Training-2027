@@ -45,6 +45,8 @@ public class Robot {
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(10);
 	private final SwerveModduleTomer Modula = new SwerveModduleTomer();
+	Modulesubsystem modula1 = new Modulesubsystem();
+	private final ComandBuilder builder = new ComandBuilder(modula1);
 
 
 	public Robot() {
@@ -146,4 +148,7 @@ public class Robot {
 		return motor;
 	}
 	public SwerveModduleTomer modula(){return modula();}
+	public ComandBuilder getCommands1(){
+		return builder;
+	}
 }
