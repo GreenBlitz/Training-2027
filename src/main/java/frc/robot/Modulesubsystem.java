@@ -43,9 +43,6 @@ public class Modulesubsystem extends GBSubsystem {
         Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
         Logger.recordOutput(Path2 + "/isconnected",isconnected1(steer));
 
-
-
-
 }
 public Double isconnected1(TalonFX motor){
     if(motor.isConnected()){
@@ -111,9 +108,9 @@ public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
         commandGroup.addRequirements(modula);
      commandGroup.addCommands(
     new InstantCommand(modula::stopmodula),
-    new InstantCommand(()->modula.pid_Degrees_Steer(degrees.getDegrees())),
-    new InstantCommand(()->modula.pid_drive(rotations.getRotations())),
-             new InstantCommand(modula::stopmodula)
+    steerToAngleCommand(degrees.getDegrees()),
+    rotations_pid(rotations.getRotations()),
+    new InstantCommand(modula::stopmodula)
     );
      return commandGroup;
 }
@@ -122,7 +119,6 @@ public Command brake(boolean brake){
     return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Brake));
     else {
         return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Coast));
-
     }
 }
 public Command manualDriveCommand(Double power){
@@ -133,7 +129,7 @@ public Command manualDriveCommand(Double power){
 
     public Command steerToAngleCommand(double degrees) {
         return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula)
-                .until(() -> modula.check(degrees,steer))
+                .until(() -> modula.check(degrees))
     ;}
 
     public Command rotations_pid(double rotations) {
@@ -142,14 +138,17 @@ public Command manualDriveCommand(Double power){
     }
 
     public Command  longnamecommand() {
-        return new SequentialCommandGroup(
-                new InstantCommand(modula::stopmodula, modula),
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addRequirements(modula);
+        command.addCommands(
+                new InstantCommand(modula::stopmodula),
                 steerToAngleCommand(0),
                 rotations_pid(2),
                 steerToAngleCommand(90),
                 rotations_pid(2),
-                new InstantCommand(modula::stopmodula, modula)
+                new InstantCommand(modula::stopmodula)
         );
+        return command;
     }
 
 }

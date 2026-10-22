@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -34,10 +35,12 @@ public class SwerveModduleTomer extends GBSubsystem {
     public Double target1 = 0.0;
     CANcoderConfiguration canfig = new CANcoderConfiguration();
 
+    public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
+
     public SwerveModduleTomer(int id1, int id2, double value) {
         super();
-        drive = new Tome_motor(id2);
-        steer = new TalonFX(id1, CANBus.roboRIO());
+        drive = new Tome_motor(id1);
+        steer = new TalonFX(id2, CANBus.roboRIO());
         motor_limit();
         setCurrent_limit();
         config.Feedback.SensorToMechanismRatio = value;
@@ -126,6 +129,7 @@ public class SwerveModduleTomer extends GBSubsystem {
         Logger.recordOutput(path + "/position", get_pos().getRotations());
         Logger.recordOutput(path + "/targerpos", target1);
         Logger.recordOutput(path + "/targetvol", targetvoltage);
+        Logger.recordOutput(path+"/test", 1.0);
         drive.logger();
 
 
@@ -160,21 +164,12 @@ public class SwerveModduleTomer extends GBSubsystem {
     }
 
 
-    public boolean check(double deegres,TalonFX motor) {
-        if (deegres == get_pos().getDegrees()) {
-            return true;
-
-        } else {
-            return false;
-        }
+    public boolean check(double deegres) {
+        return MathUtil.isNear(deegres, get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
     }
     public boolean check2(double rotations) {
-        if (rotations == get_pos().getRotations()) {
-            return true;
+        return MathUtil.isNear(rotations, get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 
-        } else {
-            return false;
-        }
     }
 
 
@@ -217,16 +212,11 @@ public class SwerveModduleTomer extends GBSubsystem {
     }
 
     public boolean checkrotations(double rotation) {
-        if (drive.get_pos().getRotations() == rotation) {
-            return true;
-        } else return false;
-
+        return drive.get_pos().getRotations() == rotation;
     }
 
     public boolean checkrotations2(double rotation) {
-        if (steer.getPosition().getValueAsDouble() == rotation) {
-            return true;
-        } else return false;
+        return steer.getPosition().getValueAsDouble() == rotation;
 
     }
     public void pid_steer (double target) {
