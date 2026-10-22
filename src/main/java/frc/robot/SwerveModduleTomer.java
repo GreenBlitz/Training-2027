@@ -157,7 +157,7 @@ public class SwerveModduleTomer extends GBSubsystem {
     }
 
 
-    public boolean check(double deegres) {
+    public boolean check(double deegres,TalonFX motor) {
         if (deegres == get_pos().getDegrees()) {
             return true;
 
@@ -198,10 +198,8 @@ public class SwerveModduleTomer extends GBSubsystem {
         setDefaultCommand(command1);
     }
 
-    public void pointy_pointy(double deegrees) {
-        InstantCommand command1 = new InstantCommand(this::move);
-        command1.until(() -> check(deegrees));
-    }
+
+
 
     public void trigger(GenericHID genericHID, int button) {
         Trigger combo = new JoystickButton(genericHID, button);
@@ -227,6 +225,22 @@ public class SwerveModduleTomer extends GBSubsystem {
             return true;
         } else return false;
 
+    }
+    public void pid_steer (double target) {
+        config.withSlot0(new Slot0Configs().withKP(1.5));
+        steer.setControl(pid_thing.withPosition(target));
+    }
+    public void pid_Degrees_Steer (double rotations) {
+        config.withSlot0(new Slot0Configs().withKP(1.5));
+        steer.setControl(pid_thing.withPosition(rotations/360));
+    }
+    public void pid_drive (double target) {
+        config.withSlot0(new Slot0Configs().withKP(1.5));
+        steer.setControl(pid_thing.withPosition(target));
+    }
+    public void pid_degrees_drive (double rotations) {
+        config.withSlot0(new Slot0Configs().withKP(1.5));
+        steer.setControl(pid_thing.withPosition(rotations/360));
     }
 
     public static Tome_motor getdrive() {
