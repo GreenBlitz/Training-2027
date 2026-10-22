@@ -19,17 +19,19 @@ import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
+import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
+
 
 public class SwerveModduleTomer extends GBSubsystem {
     public static Tome_motor drive;
-    public static TalonFX steer;
+    public  static TalonFX steer;
     private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
     private InvertedValue Counter_Clockwise_Positive = null;
     private PositionVoltage pid_thing = new PositionVoltage(1);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    public Double targetvoltage = null;
-    public Double target1 = null;
+    public Double targetvoltage = 11.0;
+    public Double target1 = 0.0;
     CANcoderConfiguration canfig = new CANcoderConfiguration();
 
     public SwerveModduleTomer(int id1, int id2, double value) {
@@ -41,9 +43,6 @@ public class SwerveModduleTomer extends GBSubsystem {
         config.Feedback.SensorToMechanismRatio = value;
         steer.optimizeBusUtilization(50);
         steer.getConfigurator().apply(config);
-    }
-
-    public SwerveModduleTomer() {
     }
 
 
@@ -100,12 +99,15 @@ public class SwerveModduleTomer extends GBSubsystem {
     }
 
     public Rotation2d get_pos() {
-        StatusSignal late = (StatusSignal) BaseStatusSignal.getLatencyCompensatedValue(steer.getPosition(), steer.getVelocity());
-        late.setUpdateFrequency(50);
-        Rotation2d rotatoin = Rotation2d.fromDegrees(late.getValueAsDouble());
-        return rotatoin;
+        steer.getVelocity().setUpdateFrequency(50);
+        steer.getPosition().setUpdateFrequency(50);
+        double idk =  getLatencyCompensatedValueAsDouble(steer.getPosition(), steer.getVelocity());
+        return (Rotation2d.fromDegrees(idk));
+
 
     }
+
+
 
     public boolean checkPosition(Rotation2d pos) {
         if (get_pos() == pos) {
@@ -121,9 +123,10 @@ public class SwerveModduleTomer extends GBSubsystem {
     public void LogVarubles() {
         Logger.recordOutput(path + "/velocity", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
         Logger.recordOutput(path + "/driveVoltage", drive.get_vol());
-        Logger.recordOutput(path + "/position", get_pos());
+        Logger.recordOutput(path + "/position", get_pos().getRotations());
         Logger.recordOutput(path + "/targerpos", target1);
         Logger.recordOutput(path + "/targetvol", targetvoltage);
+        drive.logger();
 
 
     }
@@ -152,7 +155,7 @@ public class SwerveModduleTomer extends GBSubsystem {
     public void move() {
         drive.move_half();
     }
-    public void steer() {
+    public static void steer() {
         steer.set(1.0);
     }
 

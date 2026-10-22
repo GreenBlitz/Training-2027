@@ -44,7 +44,7 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(10);
-	private final SwerveModduleTomer Modula = new SwerveModduleTomer();
+	private final SwerveModduleTomer Modula = new SwerveModduleTomer(10,11,1);
 	Modulesubsystem modula1 = new Modulesubsystem();
 	private final ComandBuilder builder = new ComandBuilder(modula1);
 
@@ -101,7 +101,7 @@ public class Robot {
 	public void updateSubsystems() {
 		motor.logger();
 		swerve.update();
-		modula().LogVarubles();
+		Modula.LogVarubles();
 	}
 
 	public void periodic() {
@@ -147,7 +147,7 @@ public class Robot {
 	public Tome_motor getMotor() {
 		return motor;
 	}
-	public SwerveModduleTomer modula(){return modula();}
+	public SwerveModduleTomer getModula(){return Modula;}
 	public Modulesubsystem getSubsystem(){
 		return modula1;
 	}

@@ -20,7 +20,7 @@ public class Modulesubsystem extends GBSubsystem {
     public String Path2;
     TalonFX steer;
     Tome_motor drive;
-    private final SwerveModduleTomer modula = new SwerveModduleTomer();
+    private final SwerveModduleTomer modula = new SwerveModduleTomer(10,11,1);
     Modulesubsystem(){
 
     Path1 = ("drive1");
