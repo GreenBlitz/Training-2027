@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.GBSubsystem;
+import frc.utils.utilcommands.LoggedDashboardCommand;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -20,6 +22,7 @@ public class Modulesubsystem extends GBSubsystem {
     public String Path2;
     TalonFX steer;
     Tome_motor drive;
+    public int check = 0;
     private final SwerveModduleTomer modula = new SwerveModduleTomer(10,11,1);
     Modulesubsystem(){
 
@@ -131,11 +134,13 @@ public Command manualDriveCommand(Double power){
 }
 
     public Command steerToAngleCommand(double degrees) {
+        Logger.recordOutput("motor1"+"check",check++);
         return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula)
                 .until(() -> modula.check(degrees))
     ;}
 
     public Command rotations_pid(double rotations) {
+        Logger.recordOutput("motor1"+"check",check++);
         return new RunCommand(() -> modula.pid_drive(rotations), modula)
                 .until(() -> modula.checkrotations(rotations));
     }
