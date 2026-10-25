@@ -112,7 +112,8 @@ public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations){
     rotations_pid(rotations.getRotations()),
     new InstantCommand(modula::stopmodula)
     );
-     return commandGroup;
+    commandGroup.withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+    return commandGroup;
 }
 public Command brake(boolean brake){
     if (brake)
@@ -120,11 +121,13 @@ public Command brake(boolean brake){
     else {
         return new InstantCommand(()->modula.mode_switcher(NeutralModeValue.Coast));
     }
+
 }
 public Command manualDriveCommand(Double power){
      Command runCommand = new RunCommand(()->modula.movepower(power));
      runCommand.addRequirements(modula);
-        return runCommand;
+     runCommand.withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+    return runCommand;
 }
 
     public Command steerToAngleCommand(double degrees) {
@@ -148,8 +151,9 @@ public Command manualDriveCommand(Double power){
                 rotations_pid(2),
                 new InstantCommand(modula::stopmodula)
         );
-        return command;
-    }
+        command.withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+        return command;}
+
 
 }
 
