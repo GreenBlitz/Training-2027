@@ -45,6 +45,7 @@ public class Modulesubsystem extends GBSubsystem {
         Logger.recordOutput(Path2 + "/driveVoltage", steer.getMotorVoltage().getValueAsDouble());
         Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.getVelocity().getValueAsDouble()));
         Logger.recordOutput(Path2 + "/isconnected",isconnected1(steer));
+        Logger.recordOutput(Path2 + "test2",check);
 
 }
 public Double isconnected1(TalonFX motor){
@@ -132,13 +133,13 @@ public Command manualDriveCommand(Double power){
 }
 
     public Command steerToAngleCommand(double degrees) {
-        Logger.recordOutput("motor1"+"check",check++);
+        check++;
         return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula)
                 .until(() -> modula.check(degrees))
     ;}
 
     public Command rotations_pid(double rotations) {
-        Logger.recordOutput("motor1"+"check",check++);
+        check++;
         return new RunCommand(() -> modula.pid_drive(rotations), modula)
                 .until(() -> modula.checkrotations(rotations));
     }
