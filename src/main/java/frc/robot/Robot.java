@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.ModuleAlon;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -40,6 +42,7 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
+	private final ModuleAlon moduleAlon;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -61,6 +64,7 @@ public class Robot {
 			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
+		this.moduleAlon = new ModuleAlon(RobotConstants.alonSteerId, RobotConstants.alonLinearId, RobotConstants.steerGearRatio, RobotConstants.linearGearRatio, RobotConstants.steerKp, RobotConstants.linearKp, new CANBus("rio"), "/motor");
 
 		this.limelights = List.of();
 		limelights.forEach(
@@ -93,6 +97,7 @@ public class Robot {
 
 	public void updateSubsystems() {
 		swerve.update();
+		moduleAlon.logAll();
 	}
 
 	public void periodic() {
@@ -114,6 +119,10 @@ public class Robot {
 
 	public IPoseEstimator getPoseEstimator() {
 		return poseEstimator;
+	}
+
+	public ModuleAlon getModuleAlon() {
+		return moduleAlon;
 	}
 
 	public Swerve getSwerve() {
