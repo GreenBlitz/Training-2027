@@ -2,13 +2,11 @@ package frc;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
-import frc.robot.Modulesubsystem;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.ChassisPowers;
 
@@ -54,15 +52,15 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.whileTrue(robot.getSubsystem().DriveDistanceCommand(Rotation2d.fromDegrees(90),Rotation2d.fromRotations(4)));
+		usedJoystick.A.whileTrue(robot.getSubsystem().DriveDistanceCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
 		usedJoystick.B.whileTrue(robot.getSubsystem().manualDriveCommand(0.9));
-		usedJoystick.Y.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
-		usedJoystick.X.onTrue(new InstantCommand(() ->robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
+		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
 		usedJoystick.POV_DOWN.onTrue(robot.getSubsystem().longnamecommand());
-		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() ->robot.getMotor().move_half()));
-		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(-2.0)));
-		usedJoystick.POV_UP.whileTrue(new RunCommand(() ->robot.getMotor().pid_misson2(2.0)));
-		usedJoystick.L1.onTrue(new InstantCommand(() ->robot.getMotor().stop()));
+		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() -> robot.getMotor().move_half()));
+		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() -> robot.getMotor().pid_misson2(-2.0)));
+		usedJoystick.POV_UP.whileTrue(new RunCommand(() -> robot.getMotor().pid_misson2(2.0)));
+		usedJoystick.L1.onTrue(new InstantCommand(() -> robot.getMotor().stop()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

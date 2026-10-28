@@ -1,23 +1,17 @@
 package frc.robot.hardware;
 
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import org.littletonrobotics.junction.Logger;
 
-import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValue;
 import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
 
 
@@ -65,12 +59,10 @@ public class Tome_motor {
 	public String path = "motor1";
 
 	public double getacl() {
-
 		StatusSignal acl = motor.getAcceleration();
 		acl.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
 		return acl.getValueAsDouble();
-
 	}
 
 	public Rotation2d get_vel() {
@@ -79,17 +71,13 @@ public class Tome_motor {
 		StatusSignal.refreshAll();
 		double double_vel = (vel.getValueAsDouble() * 360);
 		return Rotation2d.fromDegrees(double_vel);
-
-
 	}
 
 	public Rotation2d get_pos() {
 		motor.getVelocity().setUpdateFrequency(50);
 		motor.getPosition().setUpdateFrequency(50);
-		double idk =  getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
+		double idk = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
 		return (Rotation2d.fromDegrees(idk));
-
-
 	}
 
 
@@ -98,17 +86,13 @@ public class Tome_motor {
 		vol.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
 		return vol.getValueAsDouble();
-
-
 	}
 
 	public double get_cur() {
-
 		StatusSignal current = motor.getStatorCurrent();
 		current.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
 		return current.getValueAsDouble();
-
 	}
 
 	public void frequncy_optimaztion() {
@@ -121,7 +105,6 @@ public class Tome_motor {
 		voltage.setUpdateFrequency(50);
 		current.setUpdateFrequency(50);
 		StatusSignal.refreshAll();
-
 	}
 
 	public void logger() {
@@ -144,7 +127,6 @@ public class Tome_motor {
 			Counter_Clockwise_Positive = InvertedValue.CounterClockwise_Positive;
 			config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 			motor.getConfigurator().apply(config);
-
 		}
 	}
 
@@ -155,7 +137,6 @@ public class Tome_motor {
 	public void mode_switcher(NeutralModeValue mode) {
 		config.MotorOutput.NeutralMode = mode;
 		motor.getConfigurator().apply(config);
-
 	}
 
 
@@ -171,25 +152,22 @@ public class Tome_motor {
 	public void setvoltage(double vol) {
 		motor.setVoltage(vol);
 	}
-    public void move(double power){
-        motor.set(power);
 
-    }
-	public TalonFX getMotor1(){
+	public void move(double power) {
+		motor.set(power);
+	}
+
+	public TalonFX getMotor1() {
 		return motor;
 	}
-	public Double isconnected1(){
-		if(motor.isConnected()){
+
+	public Double isconnected1() {
+		if (motor.isConnected()) {
 			return (1.0);
-		}else {
+		} else {
 			return (0.0);
 		}
 	}
+
 }
-
-
-
-
-
-
 
