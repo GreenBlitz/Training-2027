@@ -129,13 +129,17 @@ public class Modulesubsystem extends GBSubsystem {
 
 	public Command longnamecommand() {
 		SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addRequirements(modula);
 		command.addCommands(
-			new InstantCommand(modula::stopmodula),
-			steerToAngleCommand(0),
-			rotations_pid(2),
-			steerToAngleCommand(90),
-			rotations_pid(2),
-			new InstantCommand(modula::stopmodula)
+                new InstantCommand(modula::stopmodula),
+                steerToAngleCommand(0),
+                rotations_pid(2),
+                steerToAngleCommand(90),
+                rotations_pid(2),
+                steerToAngleCommand(180),
+                rotations_pid(2),
+                steerToAngleCommand(270),
+                rotations_pid(2)
 		);
 		return command;
 	}
