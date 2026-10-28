@@ -93,8 +93,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	}
 
 	public Rotation2d get_pos() {
-		steer.getVelocity().setUpdateFrequency(50);
-		steer.getPosition().setUpdateFrequency(50);
 		double idk = getLatencyCompensatedValueAsDouble(steer.getPosition(), steer.getVelocity());
 		return (Rotation2d.fromDegrees(idk));
 	}

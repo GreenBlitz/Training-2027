@@ -27,7 +27,6 @@ public class Tome_motor {
 		this.motor = new TalonFX(id, CANBus.roboRIO());
 		motor_limit();
 		setCurrent_limit();
-		frequncy_optimaztion();
 		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
 	}
@@ -60,22 +59,16 @@ public class Tome_motor {
 
 	public double getacl() {
 		StatusSignal acl = motor.getAcceleration();
-		acl.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return acl.getValueAsDouble();
 	}
 
 	public Rotation2d get_vel() {
 		StatusSignal vel = motor.getVelocity();
-		vel.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		double double_vel = (vel.getValueAsDouble() * 360);
 		return Rotation2d.fromDegrees(double_vel);
 	}
 
 	public Rotation2d get_pos() {
-		motor.getVelocity().setUpdateFrequency(50);
-		motor.getPosition().setUpdateFrequency(50);
 		double idk = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
 		return (Rotation2d.fromDegrees(idk));
 	}
@@ -83,29 +76,15 @@ public class Tome_motor {
 
 	public double get_vol() {
 		StatusSignal vol = motor.getMotorVoltage();
-		vol.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return vol.getValueAsDouble();
 	}
 
 	public double get_cur() {
 		StatusSignal current = motor.getStatorCurrent();
-		current.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return current.getValueAsDouble();
 	}
 
-	public void frequncy_optimaztion() {
-		StatusSignal current = motor.getStatorCurrent();
-		StatusSignal vel = motor.getVelocity();
-		StatusSignal voltage = motor.getMotorVoltage();
-		StatusSignal position = motor.getPosition();
-		position.setUpdateFrequency(50);
-		vel.setUpdateFrequency(50);
-		voltage.setUpdateFrequency(50);
-		current.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
-	}
+
 
 	public void logger() {
 		Logger.recordOutput(path + "/current", get_cur());

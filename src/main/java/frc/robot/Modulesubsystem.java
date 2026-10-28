@@ -31,6 +31,8 @@ public class Modulesubsystem extends GBSubsystem {
 		steer = SwerveModduleTomer.getSteer();
 		drive = SwerveModduleTomer.getdrive();
 		steer.getConfigurator().apply(pidcofing);
+		steer.optimizeBusUtilization(50);
+
 	}
 
 	@Override
@@ -58,22 +60,16 @@ public class Modulesubsystem extends GBSubsystem {
 
 	public double getacl(TalonFX motor) {
 		StatusSignal acl = motor.getAcceleration();
-		acl.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return acl.getValueAsDouble();
 	}
 
 	public Rotation2d get_vel(TalonFX motor) {
 		StatusSignal vel = motor.getVelocity();
-		vel.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		double double_vel = (vel.getValueAsDouble() * 360);
 		return Rotation2d.fromDegrees(double_vel);
 	}
 
 	public Rotation2d get_pos(TalonFX motor) {
-		motor.getVelocity().setUpdateFrequency(50);
-		motor.getPosition().setUpdateFrequency(50);
 		double idk = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
 		return (Rotation2d.fromDegrees(idk));
 	}
@@ -81,15 +77,11 @@ public class Modulesubsystem extends GBSubsystem {
 
 	public double get_vol(TalonFX motor) {
 		StatusSignal vol = motor.getMotorVoltage();
-		vol.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return vol.getValueAsDouble();
 	}
 
 	public double get_cur(TalonFX motor) {
 		StatusSignal current = motor.getStatorCurrent();
-		current.setUpdateFrequency(50);
-		StatusSignal.refreshAll();
 		return current.getValueAsDouble();
 	}
 
