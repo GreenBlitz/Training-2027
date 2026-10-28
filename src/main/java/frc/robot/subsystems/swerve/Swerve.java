@@ -56,7 +56,7 @@ public class Swerve extends GBSubsystem {
 	private ChassisPowers driversPowerInputs;
 
 	public Swerve(SwerveConstants constants, Modules modules, IIMU imu, IMUSignals imuSignals) {
-		super(constants.logPath());
+		super();
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
 		this.driversPowerInputs = new ChassisPowers();
 

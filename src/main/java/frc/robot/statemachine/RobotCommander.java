@@ -17,7 +17,7 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 
 	public RobotCommander(String logPath, Robot robot) {
-		super(logPath);
+		super();
 		this.robot = robot;
 //        this.swerve = robot.getSwerve();
 		this.swerve = null;
