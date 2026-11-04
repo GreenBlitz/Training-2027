@@ -25,14 +25,11 @@ public class SwerveModduleTomer extends GBSubsystem {
 	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
 	private InvertedValue Counter_Clockwise_Positive = null;
 	private PositionVoltage pid_thing = new PositionVoltage(1);
-
 	TalonFXConfiguration config = new TalonFXConfiguration();
 	public Double targetvoltage = 11.0;
 	public Double target1 = 0.0;
 	CANcoderConfiguration canfig = new CANcoderConfiguration();
-
 	public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
-
 	public SwerveModduleTomer(int id1, int id2, double value) {
 		super();
 		drive = new Tome_motor(id1);
@@ -43,7 +40,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 		steer.optimizeBusUtilization(50);
 		steer.getConfigurator().apply(config);
 	}
-
 
 	public void SwitchDierctionswerve() {
 		if (Clockwise_Positive == null) {
@@ -148,7 +144,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public boolean check(double deegres) {
 		return MathUtil.isNear(deegres, get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
-
 	public boolean check2(double rotations) {
 		return MathUtil.isNear(rotations, get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}

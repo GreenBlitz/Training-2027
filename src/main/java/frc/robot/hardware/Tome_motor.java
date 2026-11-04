@@ -140,13 +140,14 @@ public class Tome_motor {
 		return motor;
 	}
 
-	public Double isconnected1() {
+	public Double isconnected() {
 		if (motor.isConnected()) {
 			return (1.0);
 		} else {
 			return (0.0);
 		}
 	}
+
 
 }
 
