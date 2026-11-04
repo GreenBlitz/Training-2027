@@ -88,8 +88,7 @@ public class Modulesubsystem extends GBSubsystem {
 				steerToAngleCommand(Rotation2d.fromDegrees(270),steer),
 				rotations_pid(Rotation2d.fromRotations(2.0), drive),
 				new InstantCommand(modula::stopmodula));
-
-
+		command.addRequirements(modula);
 		return command;
 	}
 

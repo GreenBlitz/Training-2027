@@ -66,8 +66,8 @@ public class SwerveModduleTomer extends GBSubsystem {
 		config.CurrentLimits.StatorCurrentLimit = 40.0;
 	}
 
-	public boolean ceheckVelocity(Rotation2d vel) {
-		if (drive.get_vel() == vel) {
+	public boolean checkVelocity(Rotation2d vel,Tome_motor Motor) {
+		if (Motor.get_vel() == vel) {
 			return true;
 		} else {
 			return false;
