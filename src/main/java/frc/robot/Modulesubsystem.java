@@ -1,11 +1,8 @@
 package frc.robot;
-
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.GBSubsystem;
@@ -26,6 +23,7 @@ public class Modulesubsystem extends GBSubsystem {
 		Path2 = ("steer1");
 		Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
 		drive = SwerveModduleTomer.getdrive();
+		steer = SwerveModduleTomer.getSteer();
 
 	}
 
@@ -48,8 +46,8 @@ public class Modulesubsystem extends GBSubsystem {
 		commandGroup.addRequirements(modula);
 		commandGroup.addCommands(
 			new InstantCommand(modula::stopmodula),
-			steerToAngleCommand(degrees.getDegrees()),
-			rotations_pid(rotations.getRotations()),
+			steerToAngleCommand(degrees,steer),
+			rotations_pid(rotations,drive),
 			new InstantCommand(modula::stopmodula)
 		);
 		return commandGroup;
@@ -69,29 +67,28 @@ public class Modulesubsystem extends GBSubsystem {
 		return runCommand;
 	}
 
-	public Command steerToAngleCommand(double degrees) {
+	public Command steerToAngleCommand(Rotation2d degrees,Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees));
+		return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees,motor));
 	}
 
-	public Command rotations_pid(double rotations) {
+	public Command rotations_pid(Rotation2d rotations,Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations));
+		return new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations,motor));
 	}
 
 	public Command longnamecommand() {
 		SequentialCommandGroup command = new SequentialCommandGroup(
-				new InstantCommand(modula::stopmodula),
-				steerToAngleCommand(0),
-				rotations_pid(2),
-				steerToAngleCommand(90),
-				rotations_pid(2),
-				steerToAngleCommand(180),
-				rotations_pid(2),
-				steerToAngleCommand(270),
-				rotations_pid(2),
-				new InstantCommand(modula::stopmodula)
-		);
+				steerToAngleCommand(Rotation2d.fromDegrees(0),steer),
+				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				steerToAngleCommand(Rotation2d.fromDegrees(90),steer),
+				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				steerToAngleCommand(Rotation2d.fromDegrees(180),steer),
+				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				steerToAngleCommand(Rotation2d.fromDegrees(270),steer),
+				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				new InstantCommand(modula::stopmodula));
+
 
 		return command;
 	}

@@ -149,5 +149,15 @@ public class Tome_motor {
 	}
 
 
+	public void pid_rotations (Rotation2d rotation){
+		config.withSlot0(new Slot0Configs().withKP(1.5));
+		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
+	}
+	public void pid_angle (Rotation2d angle){
+		config.withSlot0(new Slot0Configs().withKP(1.5));
+		motor.setControl(pid_thing.withPosition(angle.getDegrees()));
+	}
+
+
 }
 
