@@ -66,7 +66,7 @@ public class Modulesubsystem extends GBSubsystem {
 
 	public Command steerToAngleCommand(Rotation2d degrees, Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees, motor));
+		return this.asSubsystemCommand(new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees, motor)),"steerToAngle" + degrees.getDegrees());
 	}
 
 	public Command rotations_pid(Rotation2d rotations, Tome_motor motor) {
