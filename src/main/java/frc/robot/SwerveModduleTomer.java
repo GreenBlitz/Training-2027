@@ -18,7 +18,6 @@ import org.littletonrobotics.junction.Logger;
 
 import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
 
-
 public class SwerveModduleTomer extends GBSubsystem {
 
 	public static Tome_motor drive;
@@ -31,6 +30,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public Double target1 = 0.0;
 	CANcoderConfiguration canfig = new CANcoderConfiguration();
 	public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
+
 	public SwerveModduleTomer(int id1, int id2, double value) {
 		super();
 		drive = new Tome_motor(id1);
@@ -66,27 +66,18 @@ public class SwerveModduleTomer extends GBSubsystem {
 		config.CurrentLimits.StatorCurrentLimit = 40.0;
 	}
 
-	public boolean checkVelocity(Rotation2d vel,Tome_motor Motor) {
-		if (Motor.get_vel() == vel) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean checkVelocity(Rotation2d vel, Tome_motor motor) {
+		return MathUtil.isNear(vel.getDegrees(), motor.get_vel().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
 
-
-	public boolean checkPosition(Tome_motor motor ,Rotation2d pos) {
-		if (motor.get_pos() == pos) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean checkPosition(Tome_motor motor, Rotation2d pos) {
+		return MathUtil.isNear(pos.getDegrees(), motor.get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
 
 	public String path = "motor2";
 
 	public void LogVarubles() {
-		Logger.recordOutput(path + "/velocity",steer.get_vel());
+		Logger.recordOutput(path + "/velocity", steer.get_vel());
 		Logger.recordOutput(path + "/driveVoltage", drive.get_vol());
 		Logger.recordOutput(path + "/position", steer.get_pos());
 		Logger.recordOutput(path + "/targerpos", target1);
@@ -106,7 +97,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public void mode_switcher(NeutralModeValue mode) {
 		steer.mode_switcher(mode);
-
 	}
 
 	public void stopmodula() {
@@ -122,17 +112,18 @@ public class SwerveModduleTomer extends GBSubsystem {
 		steer.move_half();
 	}
 
-	public boolean check(Rotation2d deegres,Tome_motor motor) {
-		return MathUtil.isNear(deegres.getDegrees(), motor.get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
+	public boolean check(Rotation2d degrees, Tome_motor motor) {
+		return MathUtil.isNear(degrees.getDegrees(), motor.get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
-	public boolean check2(double rotations,Tome_motor motor) {
+
+	public boolean check2(double rotations, Tome_motor motor) {
 		return MathUtil.isNear(rotations, motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
 
 	public void larp(double x, double y) {
 		double rads = Math.atan2(x, y);
 		RunCommand command2 = new RunCommand(this::move);
-		command2.until(() -> check2(rads,steer));
+		command2.until(() -> check2(rads, steer));
 		double power = Math.sqrt(Math.abs((x * x) + (y * y)));
 		new InstantCommand(() -> setvoltage(11 / power));
 	}
@@ -152,9 +143,13 @@ public class SwerveModduleTomer extends GBSubsystem {
 		drive.move(power);
 	}
 
-	public boolean checkrotations(Rotation2d rotation,Tome_motor motor) {
-		return motor.get_pos() == rotation;
+	public boolean checkrotations(Rotation2d rotation, Tome_motor motor) {
+		return MathUtil.isNear(rotation.getRotations(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
+	public boolean checkdegrees(Rotation2d rotation, Tome_motor motor) {
+		return MathUtil.isNear(rotation.getRotations(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+	}
+
 
 	public void pid_steer(Rotation2d rotation) {
 		steer.pid_rotations(rotation);
@@ -166,7 +161,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public void pid_drive(Rotation2d rotation) {
 		drive.pid_rotations(rotation);
-
 	}
 
 	public void pid_degrees_drive(Rotation2d angle) {
@@ -184,6 +178,4 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public static Tome_motor getSteer() {
 		return steer;
 	}
-
-
 }

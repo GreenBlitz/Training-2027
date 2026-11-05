@@ -1,6 +1,5 @@
 package frc.robot.hardware;
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -13,7 +12,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.littletonrobotics.junction.Logger;
 
 import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
-
 
 public class Tome_motor {
 
@@ -73,7 +71,6 @@ public class Tome_motor {
 		return (Rotation2d.fromDegrees(idk));
 	}
 
-
 	public double get_vol() {
 		StatusSignal vol = motor.getMotorVoltage();
 		return vol.getValueAsDouble();
@@ -83,8 +80,6 @@ public class Tome_motor {
 		StatusSignal current = motor.getStatorCurrent();
 		return current.getValueAsDouble();
 	}
-
-
 
 	public void logger() {
 		Logger.recordOutput(path + "/current", get_cur());
@@ -118,7 +113,6 @@ public class Tome_motor {
 		motor.getConfigurator().apply(config);
 	}
 
-
 	public void set_pos(double pos) {
 		motor.setPosition(pos);
 	}
@@ -148,16 +142,13 @@ public class Tome_motor {
 		}
 	}
 
-
-	public void pid_rotations (Rotation2d rotation){
+	public void pid_rotations(Rotation2d rotation) {
 		config.withSlot0(new Slot0Configs().withKP(1.5));
 		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
 	}
-	public void pid_angle (Rotation2d angle){
+
+	public void pid_angle(Rotation2d angle) {
 		config.withSlot0(new Slot0Configs().withKP(1.5));
-		motor.setControl(pid_thing.withPosition(angle.getDegrees()));
+		motor.setControl(pid_thing.withPosition(angle.getRotations()));
 	}
-
-
 }
-

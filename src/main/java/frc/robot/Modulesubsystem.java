@@ -24,31 +24,28 @@ public class Modulesubsystem extends GBSubsystem {
 		Slot0Configs pidcofing = new Slot0Configs().withKP(0.5);
 		drive = SwerveModduleTomer.getdrive();
 		steer = SwerveModduleTomer.getSteer();
-
 	}
 
 	@Override
 	public void subsystemPeriodic() {
-		Logger.recordOutput(Path1 + "/velocity", Rotation2d.fromDegrees(drive.get_vel().getRotations()));
+		Logger.recordOutput(Path1 + "/velocity", drive.get_vel());
 		Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
-		Logger.recordOutput(Path1 + "/position", Rotation2d.fromDegrees(drive.get_pos().getRotations()));
+		Logger.recordOutput(Path1 + "/position", drive.get_pos());
 		Logger.recordOutput(Path1 + "/isconnected", drive.isconnected());
-		Logger.recordOutput(Path2 + "/velocity", Rotation2d.fromDegrees(steer.get_vel().getRotations()));
+		Logger.recordOutput(Path2 + "/velocity", steer.get_vel());
 		Logger.recordOutput(Path2 + "/driveVoltage", steer.get_vol());
-		Logger.recordOutput(Path2 + "/position", Rotation2d.fromDegrees(steer.get_pos().getRotations()));
+		Logger.recordOutput(Path2 + "/position", steer.get_pos());
 		Logger.recordOutput(Path2 + "/isconnected", steer.isconnected());
-
 	}
-
 
 	public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup();
 		commandGroup.addRequirements(modula);
 		commandGroup.addCommands(
-			new InstantCommand(modula::stopmodula),
-			steerToAngleCommand(degrees,steer),
-			rotations_pid(rotations,drive),
-			new InstantCommand(modula::stopmodula)
+				new InstantCommand(modula::stopmodula),
+				steerToAngleCommand(degrees, steer),
+				rotations_pid(rotations, drive),
+				new InstantCommand(modula::stopmodula)
 		);
 		return commandGroup;
 	}
@@ -67,30 +64,28 @@ public class Modulesubsystem extends GBSubsystem {
 		return runCommand;
 	}
 
-	public Command steerToAngleCommand(Rotation2d degrees,Tome_motor motor) {
+	public Command steerToAngleCommand(Rotation2d degrees, Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees,motor));
+		return new RunCommand(() -> modula.pid_Degrees_Steer(degrees), modula).until(() -> modula.check(degrees, motor));
 	}
 
-	public Command rotations_pid(Rotation2d rotations,Tome_motor motor) {
+	public Command rotations_pid(Rotation2d rotations, Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations,motor));
+		return new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations, motor));
 	}
 
 	public Command longnamecommand() {
 		SequentialCommandGroup command = new SequentialCommandGroup(
-				steerToAngleCommand(Rotation2d.fromDegrees(0),steer),
+				steerToAngleCommand(Rotation2d.fromDegrees(0), steer),
 				rotations_pid(Rotation2d.fromRotations(2.0), drive),
-				steerToAngleCommand(Rotation2d.fromDegrees(90),steer),
+				steerToAngleCommand(Rotation2d.fromDegrees(90), steer),
 				rotations_pid(Rotation2d.fromRotations(2.0), drive),
-				steerToAngleCommand(Rotation2d.fromDegrees(180),steer),
+				steerToAngleCommand(Rotation2d.fromDegrees(180), steer),
 				rotations_pid(Rotation2d.fromRotations(2.0), drive),
-				steerToAngleCommand(Rotation2d.fromDegrees(270),steer),
+				steerToAngleCommand(Rotation2d.fromDegrees(270), steer),
 				rotations_pid(Rotation2d.fromRotations(2.0), drive),
 				new InstantCommand(modula::stopmodula));
 		command.addRequirements(modula);
 		return command;
 	}
-
-
 }
