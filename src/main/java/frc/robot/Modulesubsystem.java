@@ -71,7 +71,7 @@ public class Modulesubsystem extends GBSubsystem {
 
 	public Command rotations_pid(Rotation2d rotations, Tome_motor motor) {
 		check++;
-		return new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations, motor));
+		return this.asSubsystemCommand(new RunCommand(() -> modula.pid_drive(rotations), modula).until(() -> modula.checkrotations(rotations, motor)),"steer rotations" + rotations.getRotations());
 	}
 
 	public Command longnamecommand() {
