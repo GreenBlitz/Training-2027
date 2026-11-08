@@ -26,6 +26,7 @@ import frc.utils.battery.BatteryUtil;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 
@@ -94,12 +95,13 @@ public class Robot {
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 
 		configureBrakeStateChooser();
+		Logger.recordOutput("logjasoigasig",modula1.getLogPath());
 	}
 
 	public void updateSubsystems() {
 		motor.logger();
 		swerve.update();
-		Modula.LogVarubles();
+		Modula.LogVariable();
 	}
 
 	public void periodic() {

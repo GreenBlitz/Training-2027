@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -76,7 +75,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public String path = "motor2";
 
-	public void LogVarubles() {
+	public void LogVariable() {
 		Logger.recordOutput(path + "/velocity", steer.get_vel());
 		Logger.recordOutput(path + "/driveVoltage", drive.get_vol());
 		Logger.recordOutput(path + "/position", steer.get_pos());
@@ -178,4 +177,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public static Tome_motor getSteer() {
 		return steer;
 	}
+
+
 }

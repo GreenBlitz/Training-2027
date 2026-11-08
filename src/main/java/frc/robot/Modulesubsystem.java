@@ -88,4 +88,9 @@ public class Modulesubsystem extends GBSubsystem {
 		command.addRequirements(modula);
 		return command;
 	}
+
+	@Override
+	public String getLogPath(){
+		return "Tomersubsystems";
+	}
 }
