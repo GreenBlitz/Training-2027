@@ -148,6 +148,5 @@ public class Tome_motor {
 
 	public void moveToPosition(Rotation2d rotation) {
 		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
-		motor.set(0.1);
 	}
 }

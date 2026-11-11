@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.robot.hardware.CommandBuilder;
 import frc.robot.hardware.Tome_motor;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -26,7 +27,6 @@ import frc.utils.battery.BatteryUtil;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(10);
-	private final SwerveModduleTomer Modula = new SwerveModduleTomer(10, 11, 1);
+	private final CommandBuilder commandBuilder = new CommandBuilder();
 
 
 	public Robot() {
@@ -144,8 +144,8 @@ public class Robot {
 		return motor;
 	}
 
-	public SwerveModduleTomer getModula() {
-		return Modula;
+	public CommandBuilder getCommandBuilder() {
+		return commandBuilder;
 	}
 
 

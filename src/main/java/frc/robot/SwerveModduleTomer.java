@@ -67,9 +67,11 @@ public class SwerveModduleTomer extends GBSubsystem {
 		steer.mode_switcher(mode);
 	}
 
-	public void stopmodula() {
-		steer.stop();
-		drive.stop();
+	public SequentialCommandGroup stopmodula() {
+		return new SequentialCommandGroup(
+		new InstantCommand(drive::stop,this),
+		new InstantCommand(steer::stop,this));
+
 	}
 
 	public void move() {
@@ -113,13 +115,13 @@ public class SwerveModduleTomer extends GBSubsystem {
 			Logger.recordOutput(Path2 + "/isconnected", steer.isconnected());
 		}
 
-		public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
+		public SequentialCommandGroup DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
 			SequentialCommandGroup commandGroup = new SequentialCommandGroup();
 			commandGroup.addRequirements(this);
 			commandGroup.addCommands(
 					new InstantCommand(this::stopmodula),
-					steerToAngleCommand(degrees, steer),
-					rotations_pid(rotations, drive),
+					steerToAngleCommand(degrees),
+					rotations_pid(rotations),
 					new InstantCommand(this::stopmodula)
 			);
 			return commandGroup;
@@ -139,33 +141,37 @@ public class SwerveModduleTomer extends GBSubsystem {
 			return runCommand;
 		}
 
-		public Command steerToAngleCommand(Rotation2d degrees, Tome_motor motor) {
-			return this.asSubsystemCommand(new RunCommand(() -> motor.moveToPosition(degrees), this),"steerToAngle" + degrees.getDegrees());
+		public Command steerToAngleCommand(Rotation2d degrees) {
+			return this.asSubsystemCommand(new InstantCommand(() -> steer.moveToPosition(degrees), this),"steerToAngle" + degrees.getDegrees());
 		}
 
-		public Command rotations_pid(Rotation2d rotations, Tome_motor motor) {
-			return this.asSubsystemCommand(new RunCommand(() -> motor.moveToPosition(rotations), this),"steer rotations" + rotations.getRotations());
+		public Command rotations_pid(Rotation2d rotations) {
+			return this.asSubsystemCommand(new InstantCommand(() -> drive.moveToPosition(rotations), this),"steer rotations" + rotations.getRotations());
 		}
 
-		public Command fullCircleDrive() {
-			return this.asSubsystemCommand(
-					new SequentialCommandGroup(
-							steerToAngleCommand(Rotation2d.fromDegrees(0), steer),
-							rotations_pid(Rotation2d.fromRotations(2.0), drive),
-							steerToAngleCommand(Rotation2d.fromDegrees(90), steer),
-							rotations_pid(Rotation2d.fromRotations(2.0), drive),
-							steerToAngleCommand(Rotation2d.fromDegrees(180), steer),
-							rotations_pid(Rotation2d.fromRotations(2.0), drive),
-							steerToAngleCommand(Rotation2d.fromDegrees(270), steer),
-							rotations_pid(Rotation2d.fromRotations(2.0), drive),
-							new InstantCommand(this::stopmodula)
-					)
-
-					,"spinCommand");
+		public SequentialCommandGroup fullCircleDrive() {
+			SequentialCommandGroup sequentialCommandGroup = new SequentialCommandGroup(
+					steerToAngleCommand(Rotation2d.fromDegrees(0)),
+					rotations_pid(Rotation2d.fromRotations(2.0)),
+					steerToAngleCommand(Rotation2d.fromDegrees(90)),
+					rotations_pid(Rotation2d.fromRotations(2.0)),
+					steerToAngleCommand(Rotation2d.fromDegrees(180)),
+					rotations_pid(Rotation2d.fromRotations(2.0)),
+					steerToAngleCommand(Rotation2d.fromDegrees(270)),
+					rotations_pid(Rotation2d.fromRotations(2.0)),
+					new InstantCommand(this::stopmodula));
+					sequentialCommandGroup.addRequirements(this);
+					return sequentialCommandGroup;
 		}
 
 		@Override
 		public String getLogPath(){
 			return "ModulacurrentCommand";
+		}
+		public Tome_motor getDrive(){
+		return drive;
+		}
+		public Tome_motor getSteer(){
+		return steer;
 		}
 	}
