@@ -1,56 +1,40 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
 
 public class SwerveModduleTomer extends GBSubsystem {
 
-	public static Tome_motor drive;
-	public static Tome_motor steer;
-	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
-	private InvertedValue Counter_Clockwise_Positive = null;
-	private PositionVoltage pid_thing = new PositionVoltage(1);
+	public  Tome_motor drive;
+	public  Tome_motor steer;
 	TalonFXConfiguration config = new TalonFXConfiguration();
-	public Double targetvoltage = 11.0;
-	public Double target1 = 0.0;
-	CANcoderConfiguration canfig = new CANcoderConfiguration();
 	public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
-
+	public String Path1;
+	public String Path2;
 	public SwerveModduleTomer(int id1, int id2, double value) {
 		super();
 		drive = new Tome_motor(id1);
 		steer = new Tome_motor(id2);
+		Path1 = ("drive1");
+		Path2 = ("steer1");
 		motor_limit();
 		setCurrent_limit();
 		config.Feedback.SensorToMechanismRatio = value;
 	}
 
-	public void SwitchDierctionswerve() {
-		if (Clockwise_Positive == null) {
-			Counter_Clockwise_Positive = null;
-			Clockwise_Positive = InvertedValue.Clockwise_Positive;
-			config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-			steer.SwitchDierction();
-		} else if (Counter_Clockwise_Positive == null) {
-			Clockwise_Positive = null;
-			Counter_Clockwise_Positive = InvertedValue.CounterClockwise_Positive;
-			config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-			steer.SwitchDierction();
-		}
+	public void SwitchDierctionswerve(Tome_motor motor) {
+		motor.SwitchDierction();
+
 	}
 
 	public void motor_limit() {
@@ -73,22 +57,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 		return MathUtil.isNear(pos.getDegrees(), motor.get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
 
-	public String path = "motor2";
 
-	public void LogVariable() {
-		Logger.recordOutput(path + "/velocity", steer.get_vel());
-		Logger.recordOutput(path + "/driveVoltage", drive.get_vol());
-		Logger.recordOutput(path + "/position", steer.get_pos());
-		Logger.recordOutput(path + "/targerpos", target1);
-		Logger.recordOutput(path + "/targetvol", targetvoltage);
-		drive.logger();
-	}
-
-	public void pid_misson2(double target) {
-		target1 = target;
-		config.withSlot0(new Slot0Configs().withKP(1.5));
-		pid_thing.withPosition(target);
-	}
 
 	public void setvoltage(double vol) {
 		steer.setvoltage(vol);
@@ -107,10 +76,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 		drive.move_half();
 	}
 
-	public static void steer() {
-		steer.move_half();
-	}
-
 	public boolean check(Rotation2d degrees, Tome_motor motor) {
 		return MathUtil.isNear(degrees.getDegrees(), motor.get_pos().getDegrees(), STEER_POSITION_TOLERANCE.getDegrees());
 	}
@@ -119,7 +84,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 		return MathUtil.isNear(rotations, motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
 
-	public void larp(double x, double y) {
+	public void manualDriving(double x, double y) {
 		double rads = Math.atan2(x, y);
 		RunCommand command2 = new RunCommand(this::move);
 		command2.until(() -> check2(rads, steer));
@@ -127,56 +92,80 @@ public class SwerveModduleTomer extends GBSubsystem {
 		new InstantCommand(() -> setvoltage(11 / power));
 	}
 
-	public void set2nmodes(NeutralModeValue mode) {
-		new InstantCommand(() -> mode_switcher(mode));
-		new InstantCommand(() -> drive.mode_switcher(mode));
-	}
-
 	public void stop() {
 		InstantCommand command1;
 		command1 = new InstantCommand(this::stopmodula);
 		setDefaultCommand(command1);
 	}
-
 	public void movepower(double power) {
 		drive.move(power);
 	}
 
-	public boolean checkrotations(Rotation2d rotation, Tome_motor motor) {
-		return MathUtil.isNear(rotation.getRotations(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+		@Override
+		public void subsystemPeriodic() {
+			Logger.recordOutput(Path1 + "/velocity", drive.get_vel());
+			Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
+			Logger.recordOutput(Path1 + "/position", drive.get_pos());
+			Logger.recordOutput(Path1 + "/isconnected", drive.isconnected());
+			Logger.recordOutput(Path2 + "/velocity", steer.get_vel());
+			Logger.recordOutput(Path2 + "/driveVoltage", steer.get_vol());
+			Logger.recordOutput(Path2 + "/position", steer.get_pos());
+			Logger.recordOutput(Path2 + "/isconnected", steer.isconnected());
+		}
+
+		public Command DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
+			SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+			commandGroup.addRequirements(this);
+			commandGroup.addCommands(
+					new InstantCommand(this::stopmodula),
+					steerToAngleCommand(degrees, steer),
+					rotations_pid(rotations, drive),
+					new InstantCommand(this::stopmodula)
+			);
+			return commandGroup;
+		}
+
+		public Command brake(boolean brake) {
+			if (brake)
+				return new InstantCommand(() -> this.mode_switcher(NeutralModeValue.Brake));
+			else {
+				return new InstantCommand(() -> this.mode_switcher(NeutralModeValue.Coast));
+			}
+		}
+
+		public Command manualDriveCommand(Double power) {
+			Command runCommand = new RunCommand(() -> this.movepower(power));
+			runCommand.addRequirements(this);
+			return runCommand;
+		}
+
+		public Command steerToAngleCommand(Rotation2d degrees, Tome_motor motor) {
+			return this.asSubsystemCommand(new RunCommand(() -> motor.moveToPosition(degrees), this),"steerToAngle" + degrees.getDegrees());
+		}
+
+		public Command rotations_pid(Rotation2d rotations, Tome_motor motor) {
+			return this.asSubsystemCommand(new RunCommand(() -> motor.moveToPosition(rotations), this),"steer rotations" + rotations.getRotations());
+		}
+
+		public Command fullCircleDrive() {
+			return this.asSubsystemCommand(
+					new SequentialCommandGroup(
+							steerToAngleCommand(Rotation2d.fromDegrees(0), steer),
+							rotations_pid(Rotation2d.fromRotations(2.0), drive),
+							steerToAngleCommand(Rotation2d.fromDegrees(90), steer),
+							rotations_pid(Rotation2d.fromRotations(2.0), drive),
+							steerToAngleCommand(Rotation2d.fromDegrees(180), steer),
+							rotations_pid(Rotation2d.fromRotations(2.0), drive),
+							steerToAngleCommand(Rotation2d.fromDegrees(270), steer),
+							rotations_pid(Rotation2d.fromRotations(2.0), drive),
+							new InstantCommand(this::stopmodula)
+					)
+
+					,"spinCommand");
+		}
+
+		@Override
+		public String getLogPath(){
+			return "ModulacurrentCommand";
+		}
 	}
-	public boolean checkdegrees(Rotation2d rotation, Tome_motor motor) {
-		return MathUtil.isNear(rotation.getRotations(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
-	}
-
-
-	public void pid_steer(Rotation2d rotation) {
-		steer.pid_rotations(rotation);
-	}
-
-	public void pid_Degrees_Steer(Rotation2d degrees) {
-		steer.pid_angle(degrees);
-	}
-
-	public void pid_drive(Rotation2d rotation) {
-		drive.pid_rotations(rotation);
-	}
-
-	public void pid_degrees_drive(Rotation2d angle) {
-		drive.pid_angle(angle);
-	}
-
-	public static Tome_motor getdrive() {
-		return drive;
-	}
-
-	public static TalonFX getdrive2() {
-		return drive.getMotor1();
-	}
-
-	public static Tome_motor getSteer() {
-		return steer;
-	}
-
-
-}

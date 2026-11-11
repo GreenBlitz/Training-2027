@@ -44,8 +44,6 @@ public class Robot {
 	private final List<Limelight> limelights;
 	private final Tome_motor motor = new Tome_motor(10);
 	private final SwerveModduleTomer Modula = new SwerveModduleTomer(10, 11, 1);
-	Modulesubsystem modula1 = new Modulesubsystem();
-	private final ComandBuilder builder = new ComandBuilder(modula1);
 
 
 	public Robot() {
@@ -95,13 +93,11 @@ public class Robot {
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 
 		configureBrakeStateChooser();
-		Logger.recordOutput("logjasoigasig",modula1.getLogPath());
 	}
 
 	public void updateSubsystems() {
 		motor.logger();
 		swerve.update();
-		Modula.LogVariable();
 	}
 
 	public void periodic() {
@@ -152,8 +148,5 @@ public class Robot {
 		return Modula;
 	}
 
-	public Modulesubsystem getSubsystem() {
-		return modula1;
-	}
 
 }
