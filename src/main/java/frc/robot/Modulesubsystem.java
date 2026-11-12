@@ -17,6 +17,7 @@ public class Modulesubsystem extends GBSubsystem {
 	Tome_motor drive;
 	public int check = 0;
 	private final SwerveModduleTomer modula = new SwerveModduleTomer(10, 11, 1);
+	public Double turn = (2.0);
 
 	Modulesubsystem() {
 		Path1 = ("drive1");
@@ -77,13 +78,13 @@ public class Modulesubsystem extends GBSubsystem {
 	public Command longnamecommand() {
 		SequentialCommandGroup command = new SequentialCommandGroup(
 				steerToAngleCommand(Rotation2d.fromDegrees(0), steer),
-				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				rotations_pid(Rotation2d.fromRotations(turn), drive),
 				steerToAngleCommand(Rotation2d.fromDegrees(90), steer),
-				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				rotations_pid(Rotation2d.fromRotations(turn), drive),
 				steerToAngleCommand(Rotation2d.fromDegrees(180), steer),
-				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				rotations_pid(Rotation2d.fromRotations(turn), drive),
 				steerToAngleCommand(Rotation2d.fromDegrees(270), steer),
-				rotations_pid(Rotation2d.fromRotations(2.0), drive),
+				rotations_pid(Rotation2d.fromRotations(turn), drive),
 				new InstantCommand(modula::stopmodula));
 		command.addRequirements(modula);
 		return command;
