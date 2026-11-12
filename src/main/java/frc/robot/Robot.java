@@ -143,7 +143,7 @@ public class Robot {
 		return motor;
 	}
 
-	public SwerveModduleTomer getModdule() {
+	public SwerveModduleTomer getModule() {
 		return module;
 	}
 

@@ -19,7 +19,7 @@ public class CommandBuilder {
 	}
 
 	public Command getManualDriveCommand(Rotation2d angle, Rotation2d spins) {
-		return module.asSubsystemCommand( new RunCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
+		return module.asSubsystemCommand(new RunCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
 	}
 
 	public Command getPowerDrive(double power) {
