@@ -7,13 +7,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.AlonFX;
 import frc.CANCoderAlon;
+import frc.robot.hardware.interfaces.ControllableMotor;
+import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class ModuleAlon extends GBSubsystem {
 
-	private final AlonFX linear;
-	private final AlonFX steer;
+	private final TalonFXMotor linear;
+	private final TalonFXMotor steer;
 	private final CANCoderAlon canCoder;
 	private final String logpath;
 	private final ModuleCommandsBuilder commandsBuilder;
@@ -110,15 +112,15 @@ public class ModuleAlon extends GBSubsystem {
 	}
 
 	public void setSteerPosition(Rotation2d position) {
-		steer.setPosition(position);
+		steer.resetPosition(position);
 	}
 
 	public void setLinearPosition(Rotation2d position) {
-		linear.setPosition(position);
+		linear.resetPosition(position);
 	}
 
 	public void resetSteerWithCancoder() {
-		steer.setPosition(canCoder.getPosition());
+		steer.resetPosition(canCoder.getPosition());
 	}
 
 	public void logAll() {
