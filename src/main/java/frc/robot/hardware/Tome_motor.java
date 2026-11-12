@@ -1,5 +1,6 @@
 package frc.robot.hardware;
 
+import com.ctre.phoenix6.configs.SlotConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -20,11 +21,13 @@ public class Tome_motor {
 	private InvertedValue Counter_Clockwise_Positive = null;
 	private PositionVoltage pid_thing = new PositionVoltage(1);
 	TalonFXConfiguration config = new TalonFXConfiguration();
+	public Double KP = 1.5;
 
 	public Tome_motor(int id) {
 		this.motor = new TalonFX(id, CANBus.roboRIO());
 		motor_limit();
 		setCurrent_limit();
+		Slot0Configs.from(new SlotConfigs().withKP(KP));
 		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
 	}
@@ -139,16 +142,11 @@ public class Tome_motor {
 			return (1.0);
 		} else {
 			return (0.0);
+
 		}
 	}
 
-	public void pid_rotations(Rotation2d rotation) {
-		config.withSlot0(new Slot0Configs().withKP(1.5));
+	public void moveToPosition(Rotation2d rotation) {
 		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
-	}
-
-	public void pid_angle(Rotation2d angle) {
-		config.withSlot0(new Slot0Configs().withKP(1.5));
-		motor.setControl(pid_thing.withPosition(angle.getRotations()));
 	}
 }

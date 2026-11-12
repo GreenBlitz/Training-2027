@@ -8,6 +8,8 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.SwerveModduleTomer;
+import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.swerve.ChassisPowers;
 
 public class JoysticksBindings {
@@ -52,15 +54,15 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(robot.getSubsystem().DriveDistanceCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
-		usedJoystick.B.whileTrue(robot.getSubsystem().manualDriveCommand(0.9));
+		usedJoystick.A.onTrue(robot.getCommandBuilder().getManualDriveCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
+		usedJoystick.B.whileTrue(robot.getCommandBuilder().getPowerDrive(0.9));
 		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
 		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
-		usedJoystick.POV_DOWN.onTrue(robot.getSubsystem().steerToAngleCommand(Rotation2d.fromDegrees(90.0), robot.getMotor()));
-		usedJoystick.POV_LEFT.onTrue(new InstantCommand(() -> robot.getMotor().move_half()));
-		usedJoystick.POV_RIGHT.whileTrue(new RunCommand(() -> robot.getMotor().pid_misson2(-2.0)));
-		usedJoystick.POV_UP.whileTrue(new RunCommand(() -> robot.getMotor().pid_misson2(2.0)));
-		usedJoystick.L1.onTrue(new InstantCommand(() -> robot.getMotor().stop()));
+		usedJoystick.POV_DOWN.onTrue(robot.getCommandBuilder().getFullCircleDrive());
+		usedJoystick.POV_LEFT.onTrue(robot.getCommandBuilder().getRotationspid(Rotation2d.fromRotations(2.0)));
+		usedJoystick.POV_RIGHT.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(-2.0)));
+		usedJoystick.POV_UP.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(2.0)));
+		usedJoystick.L1.onTrue((robot.getCommandBuilder().getStopModule()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
