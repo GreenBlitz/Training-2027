@@ -142,11 +142,11 @@ public class Tome_motor {
 			return (1.0);
 		} else {
 			return (0.0);
-
 		}
 	}
 
 	public void moveToPosition(Rotation2d rotation) {
 		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
 	}
+
 }

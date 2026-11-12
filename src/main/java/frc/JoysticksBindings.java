@@ -8,8 +8,6 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
-import frc.robot.SwerveModduleTomer;
-import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.swerve.ChassisPowers;
 
 public class JoysticksBindings {
@@ -54,15 +52,16 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(robot.getCommandBuilder().getManualDriveCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
-		usedJoystick.B.whileTrue(robot.getCommandBuilder().getPowerDrive(0.9));
+		usedJoystick.A
+			.onTrue(robot.getModdule().getCommandBuilder().getManualDriveCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
+		usedJoystick.B.whileTrue(robot.getModdule().getCommandBuilder().getPowerDrive(0.9));
 		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
 		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
-		usedJoystick.POV_DOWN.onTrue(robot.getCommandBuilder().getFullCircleDrive());
-		usedJoystick.POV_LEFT.onTrue(robot.getCommandBuilder().getRotationspid(Rotation2d.fromRotations(2.0)));
+		usedJoystick.POV_DOWN.onTrue(robot.getModdule().getCommandBuilder().getFullCircleDrive());
+		usedJoystick.POV_LEFT.onTrue(robot.getModdule().getCommandBuilder().getRotationspid(Rotation2d.fromRotations(2.0)));
 		usedJoystick.POV_RIGHT.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(-2.0)));
 		usedJoystick.POV_UP.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(2.0)));
-		usedJoystick.L1.onTrue((robot.getCommandBuilder().getStopModule()));
+		usedJoystick.L1.onTrue((robot.getModdule().getCommandBuilder().getStopModule()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
