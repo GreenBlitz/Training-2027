@@ -74,7 +74,7 @@ public class Robot {
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 		this.moduleAlon = new ModuleAlon(
-				"/motor"
+				"moduleAlon"
 		);
 		moduleAlon.setLinearNeutral(true);
 		this.moduleAlon.setLinearNeutral(true);

@@ -141,6 +141,9 @@ public class ModuleAlon extends GBSubsystem {
 		Logger.recordOutput(logpath + "/steerTarget", steer.getDevice().getClosedLoopReference().getValue());
 		Logger.recordOutput(logpath + "/linearTarget", linear.getDevice().getClosedLoopReference().getValue());
 		Logger.recordOutput(logpath + "/moduleMode", getState());
+		steer.updateInputs();
+		linear.updateInputs();
+
 		Translation2d direction = new Translation2d(linear.getDevice().getPosition().getValue().in(Units.Rotation), 0).rotateBy(getSteerPosition());
 		Logger.recordOutput(logpath + "/directionAngle", direction.getAngle());
 	}
