@@ -52,14 +52,14 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(robot.getModule().getCommandBuilder().getManualDriveCommand(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
+		usedJoystick.A.onTrue(robot.getModule().getCommandBuilder().getdriveDistance(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
 		usedJoystick.B.onTrue(robot.getModule().getCommandBuilder().getPowerDrive(0.9));
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Brake)));
-		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getMotor().mode_switcher(NeutralModeValue.Coast)));
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getModule().getCommandBuilder().getModeSwitcher(NeutralModeValue.Brake)));
+		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getModule().getCommandBuilder().getModeSwitcher(NeutralModeValue.Brake)));
 		usedJoystick.POV_DOWN.onTrue(robot.getModule().getCommandBuilder().getFullCircleDrive());
 		usedJoystick.POV_LEFT.onTrue(robot.getModule().getCommandBuilder().getRotationspid(Rotation2d.fromRotations(2.0)));
-		usedJoystick.POV_RIGHT.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(-2.0)));
-		usedJoystick.POV_UP.onTrue(new RunCommand(() -> robot.getMotor().pid_misson2(2.0)));
+		usedJoystick.POV_RIGHT.onTrue(new RunCommand(() -> robot.getModule().getCommandBuilder().getSteerToAngleCommand(Rotation2d.fromRotations(-2.0))));
+		usedJoystick.POV_RIGHT.onTrue(new RunCommand(() -> robot.getModule().getCommandBuilder().getSteerToAngleCommand(Rotation2d.fromRotations(2.0))));
 		usedJoystick.L1.onTrue((robot.getModule().getCommandBuilder().getStopModule()));
 	}
 

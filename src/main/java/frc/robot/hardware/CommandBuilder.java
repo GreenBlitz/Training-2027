@@ -1,5 +1,6 @@
 package frc.robot.hardware;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -39,6 +40,9 @@ public class CommandBuilder {
 	}
 	public Command getPowerdrivecommand(double power){
 		return module.asSubsystemCommand(new RunCommand(()->module.powerDriveCommand(power),module),"drivePower");
+	}
+	public Command getModeSwitcher(NeutralModeValue value){
+		return module.asSubsystemCommand(new InstantCommand(()->module.mode_switcher(value),module),"ModeSwitch");
 	}
 
 }
