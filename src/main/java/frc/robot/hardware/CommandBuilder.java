@@ -18,7 +18,7 @@ public class CommandBuilder {
 		return module.asSubsystemCommand( new InstantCommand(module::fullCircleDrive,module),"fullCircleDrive");
 	}
 
-	public Command getManualDriveCommand(Rotation2d angle, Rotation2d spins) {
+	public Command getdriveDistance(Rotation2d angle, Rotation2d spins) {
 		return module.asSubsystemCommand(new RunCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
 	}
 
@@ -36,6 +36,9 @@ public class CommandBuilder {
 
 	public Command getStopModule() {
 		return module.asSubsystemCommand(new InstantCommand(module::stopmodula,module),"stopModula");
+	}
+	public Command getPowerdrivecommand(double power){
+		return module.asSubsystemCommand(new RunCommand(()->module.powerDriveCommand(power),module),"drivePower");
 	}
 
 }

@@ -36,8 +36,9 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	CommandBuilder commandBuilder = new CommandBuilder(this);
 
-	public void SwitchDierctionswerve(Tome_motor motor) {
-		motor.SwitchDierction();
+	public void SwitchDierctionswerve() {
+		steer.SwitchDierction();
+		drive.SwitchDierction();
 	}
 
 	public void motor_limit() {
@@ -54,14 +55,17 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public void setvoltage(double vol) {
 		steer.setvoltage(vol);
+		drive.setvoltage(vol);
 	}
 
 	public void mode_switcher(NeutralModeValue mode) {
 		steer.mode_switcher(mode);
+		drive.mode_switcher(mode);
 	}
 
-	public SequentialCommandGroup stopmodula() {
-		return new SequentialCommandGroup(new InstantCommand(drive::stop, this), new InstantCommand(steer::stop, this));
+	public void stopmodula() {
+		steer.stop();
+		drive.stop();
 	}
 
 	public void move() {
@@ -114,7 +118,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 		drive.mode_switcher(brake);
 	}
 
-	public void manualDriveCommand(Double power) {
+	public void powerDriveCommand(Double power) {
 		movepower(power);
 	}
 
@@ -153,5 +157,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public CommandBuilder getCommandBuilder() {
 		return commandBuilder;
 	}
+
 
 }

@@ -27,9 +27,10 @@ public class Tome_motor {
 		this.motor = new TalonFX(id, CANBus.roboRIO());
 		motor_limit();
 		setCurrent_limit();
-		Slot0Configs.from(new SlotConfigs().withKP(KP));
+		config.Slot0.kP = KP;
 		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
+
 	}
 
 	public void motor_limit() {
@@ -70,8 +71,8 @@ public class Tome_motor {
 	}
 
 	public Rotation2d get_pos() {
-		double idk = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
-		return (Rotation2d.fromDegrees(idk));
+		double rotations = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
+		return Rotation2d.fromRotations(rotations);
 	}
 
 	public double get_vol() {
@@ -121,8 +122,8 @@ public class Tome_motor {
 	}
 
 	public void pid_misson2(double target) {
-		config.withSlot0(new Slot0Configs().withKP(1.5));
-		pid_thing.withPosition(target);
+		motor.setControl(pid_thing.withPosition(target));
+
 	}
 
 	public void setvoltage(double vol) {

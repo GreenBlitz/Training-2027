@@ -41,7 +41,6 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
-	private final Tome_motor motor = new Tome_motor(10);
 	SwerveModduleTomer module = new SwerveModduleTomer(10, 11, 1);
 
 
@@ -95,7 +94,6 @@ public class Robot {
 	}
 
 	public void updateSubsystems() {
-		motor.logger();
 		swerve.update();
 	}
 
@@ -139,9 +137,6 @@ public class Robot {
 		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
 
-	public Tome_motor getMotor() {
-		return motor;
-	}
 
 	public SwerveModduleTomer getModule() {
 		return module;
