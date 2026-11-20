@@ -41,7 +41,7 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
-	SwerveModduleTomer module = new SwerveModduleTomer(10, 11, 1);
+	SwerveModduleTomer module = new SwerveModduleTomer(10, 11, 12.8,5.9028);
 
 
 	public Robot() {

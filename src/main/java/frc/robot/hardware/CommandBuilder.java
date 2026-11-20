@@ -16,11 +16,11 @@ public class CommandBuilder {
 	}
 
 	public Command getFullCircleDrive() {
-		return module.asSubsystemCommand( new InstantCommand(module::fullCircleDrive,module),"fullCircleDrive");
+		return module.asSubsystemCommand( new RunCommand(module::fullCircleDrive,module),"fullCircleDrive");
 	}
 
 	public Command getdriveDistance(Rotation2d angle, Rotation2d spins) {
-		return module.asSubsystemCommand(new RunCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
+		return module.asSubsystemCommand(new InstantCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
 	}
 
 	public Command getPowerDrive(double power) {
@@ -43,6 +43,9 @@ public class CommandBuilder {
 	}
 	public Command getModeSwitcher(NeutralModeValue value){
 		return module.asSubsystemCommand(new InstantCommand(()->module.mode_switcher(value),module),"ModeSwitch");
+	}
+	public Command getTest(){
+		return module.asSubsystemCommand(new InstantCommand(module::testing1,module),"testing");
 	}
 
 }

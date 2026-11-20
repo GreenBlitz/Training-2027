@@ -18,20 +18,29 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModduleTomer extends GBSubsystem {
 	public Tome_motor drive;
 	public Tome_motor steer;
-	TalonFXConfiguration config = new TalonFXConfiguration();
+	TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+	TalonFXConfiguration steerConfig = new TalonFXConfiguration();
+
 	public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
 	public String Path1;
 	public String Path2;
 
-	public SwerveModduleTomer(int id1, int id2, double value) {
+	public SwerveModduleTomer(int id1, int id2, double steergearRation,double drivegearRatio) {
 		super();
-		drive = new Tome_motor(id1);
-		steer = new Tome_motor(id2);
+		steerConfig.Slot0.kP = 11;
+		steerConfig.Slot0.kD = 0.22;
+		steerConfig.Slot0.kS = 0.28;
+		steerConfig.Feedback.SensorToMechanismRatio = steergearRation;
+		driveConfig.Slot0.kP = 11;
+		driveConfig.Slot0.kD = 0.22;
+		driveConfig.Slot0.kS = 0.28;
+		driveConfig.Feedback.SensorToMechanismRatio = drivegearRatio;
+		drive = new Tome_motor(id1,driveConfig);
+		steer = new Tome_motor(id2,steerConfig);
 		Path1 = ("drive1");
 		Path2 = ("steer1");
 		motor_limit();
 		setCurrent_limit();
-		config.Feedback.SensorToMechanismRatio = value;
 	}
 
 	CommandBuilder commandBuilder = new CommandBuilder(this);
@@ -109,7 +118,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public void DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
 			stopmodula();
 			steerToAngle(degrees);
-			rotations_pid(rotations);
+			drive.moveRotations(rotations);
 			stopmodula();
 	}
 
@@ -129,16 +138,21 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public void rotations_pid(Rotation2d rotations) {
 		drive.moveToPosition(rotations);
 	}
+	public void testing1(){
+		drive.moveRotations(Rotation2d.fromRotations(3));
+	}
 
 	public void fullCircleDrive() {
-		steerToAngle(Rotation2d.fromDegrees(0));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(90));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(180));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(270));
-		rotations_pid(Rotation2d.fromRotations(2.0));
+		stopmodula();
+		steer.moveToPosition(Rotation2d.fromRotations(0));
+		drive.moveRotations(Rotation2d.fromRotations(2.0));
+		steer.moveToPosition(Rotation2d.fromRotations(90));
+		drive.moveRotations(Rotation2d.fromRotations(2.0));
+		steer.moveToPosition(Rotation2d.fromRotations(180));
+		drive.moveRotations(Rotation2d.fromRotations(2.0));
+		steer.moveToPosition(Rotation2d.fromRotations(270));
+		drive.moveRotations(Rotation2d.fromRotations(2.0));
+		stopmodula();
 	}
 
 	@Override
