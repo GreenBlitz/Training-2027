@@ -20,7 +20,7 @@ public class CommandBuilder {
 	}
 
 	public Command getdriveDistance(Rotation2d angle, Rotation2d spins) {
-		return module.asSubsystemCommand(new RunCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
+		return module.asSubsystemCommand(new InstantCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
 	}
 
 	public Command getPowerDrive(double power) {
@@ -36,13 +36,18 @@ public class CommandBuilder {
 	}
 
 	public Command getStopModule() {
+		module.setDefaultCommand(new InstantCommand(module::stopmodula , module));
 		return module.asSubsystemCommand(new InstantCommand(module::stopmodula,module),"stopModula");
+
 	}
 	public Command getPowerdrivecommand(double power){
 		return module.asSubsystemCommand(new RunCommand(()->module.powerDriveCommand(power),module),"drivePower");
 	}
 	public Command getModeSwitcher(NeutralModeValue value){
 		return module.asSubsystemCommand(new InstantCommand(()->module.mode_switcher(value),module),"ModeSwitch");
+	}
+	public Command getTest(){
+		return module.asSubsystemCommand(new InstantCommand(module::testing1,module),"testing");
 	}
 
 }

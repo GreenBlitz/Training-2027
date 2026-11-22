@@ -18,20 +18,27 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModduleTomer extends GBSubsystem {
 	public Tome_motor drive;
 	public Tome_motor steer;
-	TalonFXConfiguration config = new TalonFXConfiguration();
+	TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+	TalonFXConfiguration steerConfig = new TalonFXConfiguration();
+
 	public static final Rotation2d STEER_POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
 	public String Path1;
 	public String Path2;
 
-	public SwerveModduleTomer(int id1, int id2, double value) {
+	public SwerveModduleTomer(int id1, int id2, double steergearRation,double drivegearRatio) {
 		super();
-		drive = new Tome_motor(id1);
-		steer = new Tome_motor(id2);
+		steerConfig.Slot0.kP = 11;
+		steerConfig.Slot0.kD = 0.22;
+		steerConfig.Slot0.kS = 0.28;
+		steerConfig.Feedback.SensorToMechanismRatio = steergearRation;
+		driveConfig.Slot0.kP = 11;
+		driveConfig.Slot0.kD = 0.22;
+		driveConfig.Slot0.kS = 0.28;
+		driveConfig.Feedback.SensorToMechanismRatio = drivegearRatio;
+		drive = new Tome_motor(id1,driveConfig);
+		steer = new Tome_motor(id2,steerConfig);
 		Path1 = ("drive1");
 		Path2 = ("steer1");
-		motor_limit();
-		setCurrent_limit();
-		config.Feedback.SensorToMechanismRatio = value;
 	}
 
 	CommandBuilder commandBuilder = new CommandBuilder(this);
@@ -39,18 +46,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public void SwitchDierctionswerve() {
 		steer.SwitchDierction();
 		drive.SwitchDierction();
-	}
-
-	public void motor_limit() {
-		config.HardwareLimitSwitch.ForwardLimitEnable = true;
-		config.HardwareLimitSwitch.ReverseLimitEnable = true;
-		config.HardwareLimitSwitch.ForwardLimitAutosetPositionValue = 5.0;
-		config.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = -3.0;
-	}
-
-	public void setCurrent_limit() {
-		config.CurrentLimits.StatorCurrentLimitEnable = true;
-		config.CurrentLimits.StatorCurrentLimit = 40.0;
 	}
 
 	public void setvoltage(double vol) {
@@ -108,7 +103,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public void DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
 			steerToAngle(degrees);
-			rotations_pid(rotations);
+			drive.MoveRotations(rotations);
 	}
 
 	public void brake(NeutralModeValue brake) {
@@ -127,16 +122,19 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public void rotations_pid(Rotation2d rotations) {
 		drive.moveToPosition(rotations);
 	}
+	public void testing1(){
+		drive.MoveRotations(Rotation2d.fromRotations(2.0));
+	}
 
 	public void fullCircleDrive() {
-		steerToAngle(Rotation2d.fromDegrees(0));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(90));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(180));
-		rotations_pid(Rotation2d.fromRotations(2.0));
-		steerToAngle(Rotation2d.fromDegrees(270));
-		rotations_pid(Rotation2d.fromRotations(2.0));
+		steer.movedegrees(Rotation2d.fromDegrees(90));
+		drive.MoveRotations(Rotation2d.fromRotations(2.0));
+		steer.movedegrees(Rotation2d.fromDegrees(90));
+		drive.MoveRotations(Rotation2d.fromRotations(2.0));
+		steer.movedegrees(Rotation2d.fromDegrees(90));
+		drive.MoveRotations(Rotation2d.fromRotations(2.0));
+		steer.movedegrees(Rotation2d.fromDegrees(90));
+		drive.MoveRotations(Rotation2d.fromRotations(2.0));
 	}
 
 	@Override

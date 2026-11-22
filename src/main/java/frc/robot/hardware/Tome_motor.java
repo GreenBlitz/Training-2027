@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.RobotConstants;
 import org.littletonrobotics.junction.Logger;
 
 import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
@@ -17,33 +18,21 @@ import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDou
 public class Tome_motor {
 
 	private final TalonFX motor;
-	private InvertedValue Clockwise_Positive = InvertedValue.valueOf(1);
+	private InvertedValue Clockwise_Positive = InvertedValue.Clockwise_Positive;
 	private InvertedValue Counter_Clockwise_Positive = null;
-	private PositionVoltage pid_thing = new PositionVoltage(1);
+	private PositionVoltage pid_thing = new PositionVoltage(0);
 	TalonFXConfiguration config = new TalonFXConfiguration();
 	public Double KP = 1.5;
 
-	public Tome_motor(int id) {
+	public Tome_motor(int id,TalonFXConfiguration config) {
 		this.motor = new TalonFX(id, CANBus.roboRIO());
-		motor_limit();
-		setCurrent_limit();
-		config.Slot0.kP = KP;
-		motor.optimizeBusUtilization(50);
 		motor.getConfigurator().apply(config);
+		motor.optimizeBusUtilization(RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ);
+
 
 	}
 
-	public void motor_limit() {
-		config.HardwareLimitSwitch.ForwardLimitEnable = true;
-		config.HardwareLimitSwitch.ReverseLimitEnable = true;
-		config.HardwareLimitSwitch.ForwardLimitAutosetPositionValue = 5.0;
-		config.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = -3.0;
-	}
 
-	public void setCurrent_limit() {
-		config.CurrentLimits.StatorCurrentLimitEnable = true;
-		config.CurrentLimits.StatorCurrentLimit = 40.0;
-	}
 
 	public void move_half() {
 		motor.set(0.5);
@@ -148,6 +137,19 @@ public class Tome_motor {
 
 	public void moveToPosition(Rotation2d rotation) {
 		motor.setControl(pid_thing.withPosition(rotation.getRotations()));
+	}
+
+	public void MoveRotations(Rotation2d rotations){
+		double curent = get_pos().getRotations();
+		motor.setControl(pid_thing.withPosition(curent+rotations.getRotations()));
+
+
+	}
+	public void movedegrees(Rotation2d degrees){
+		double curent = get_pos().getDegrees();
+		motor.setControl(pid_thing.withPosition(curent+degrees.getRotations()));
+
+
 	}
 
 
