@@ -107,10 +107,8 @@ public class SwerveModduleTomer extends GBSubsystem {
 	}
 
 	public void DriveDistanceCommand(Rotation2d degrees, Rotation2d rotations) {
-			stopmodula();
 			steerToAngle(degrees);
 			rotations_pid(rotations);
-			stopmodula();
 	}
 
 	public void brake(NeutralModeValue brake) {
