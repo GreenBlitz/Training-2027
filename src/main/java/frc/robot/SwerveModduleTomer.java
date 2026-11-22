@@ -129,12 +129,6 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public void fullCircleDrive() {
 		steer.movedegrees(Rotation2d.fromDegrees(90));
 		drive.MoveRotations(Rotation2d.fromRotations(2.0));
-		steer.movedegrees(Rotation2d.fromDegrees(90));
-		drive.MoveRotations(Rotation2d.fromRotations(2.0));
-		steer.movedegrees(Rotation2d.fromDegrees(90));
-		drive.MoveRotations(Rotation2d.fromRotations(2.0));
-		steer.movedegrees(Rotation2d.fromDegrees(90));
-		drive.MoveRotations(Rotation2d.fromRotations(2.0));
 	}
 
 	@Override
@@ -152,6 +146,13 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	public CommandBuilder getCommandBuilder() {
 		return commandBuilder;
+	}
+
+	public boolean check(Rotation2d target){
+		return (target == steer.get_pos());
+
+
+
 	}
 
 
