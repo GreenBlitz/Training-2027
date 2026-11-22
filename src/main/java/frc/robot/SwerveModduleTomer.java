@@ -1,18 +1,17 @@
 package frc.robot;
 
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.hardware.CommandBuilder;
 import frc.robot.hardware.Tome_motor;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.function.BooleanSupplier;
 
 
 public class SwerveModduleTomer extends GBSubsystem {
@@ -67,16 +66,19 @@ public class SwerveModduleTomer extends GBSubsystem {
 		drive.move_half();
 	}
 
-	public boolean check2(double rotations, Tome_motor motor) {
-		return MathUtil.isNear(rotations, motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+	public Boolean checkdegrees(Rotation2d rotations, Tome_motor motor) {
+		return MathUtil.isNear(rotations.getDegrees(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+	}
+	public Boolean checkRotations(Rotation2d rotations, Tome_motor motor) {
+		return MathUtil.isNear(rotations.getDegrees(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
 
 	public void manualDriving(double x, double y) {
 		double rads = Math.atan2(x, y);
 		RunCommand command2 = new RunCommand(this::move, this);
-		command2.until(() -> check2(rads, steer));
+		command2.until(() -> checkdegrees(Rotation2d.fromRadians(rads), steer));
 		double power = Math.sqrt(Math.abs((x * x) + (y * y)));
-		new InstantCommand(() -> setvoltage(11 / power), this);
+		setvoltage(11 / power);
 	}
 
 	public void stop() {
@@ -148,12 +150,15 @@ public class SwerveModduleTomer extends GBSubsystem {
 		return commandBuilder;
 	}
 
-	public boolean check(Rotation2d target){
-		return (target == steer.get_pos());
+	public void posToZero(){
+		drive.set_pos(0);
+		steer.set_pos(0);
+	}
+
 
 
 
 	}
 
 
-}
+

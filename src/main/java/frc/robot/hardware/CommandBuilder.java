@@ -18,9 +18,11 @@ public class CommandBuilder {
 
 	public Command getFullCircleDrive() {
 		return module.asSubsystemCommand( new SequentialCommandGroup(
-				new InstantCommand(module::fullCircleDrive).until()
 
-				,module),"fullCircleDrive");
+				new InstantCommand(module::fullCircleDrive,module).until(()->module.checkdegrees(Rotation2d.fromDegrees(90),module.getSteer())),
+				new InstantCommand(module::fullCircleDrive,module).until(()->module.checkdegrees(Rotation2d.fromDegrees(180),module.getSteer())),
+				new InstantCommand(module::fullCircleDrive,module).until(()->module.checkdegrees(Rotation2d.fromDegrees(270),module.getSteer())),
+				new InstantCommand(module::fullCircleDrive,module).until(()->module.checkdegrees(Rotation2d.fromDegrees(360),module.getSteer()))),"FulleCircleDrive");
 	}
 
 	public Command getdriveDistance(Rotation2d angle, Rotation2d spins) {
@@ -52,6 +54,9 @@ public class CommandBuilder {
 	}
 	public Command getTest(){
 		return module.asSubsystemCommand(new InstantCommand(module::testing1,module),"testing");
+	}
+	public Command getPosToZero(){
+		return module.asSubsystemCommand(new InstantCommand(module::posToZero,module),"posToZero");
 	}
 
 }
