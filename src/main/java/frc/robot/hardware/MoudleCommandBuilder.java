@@ -6,14 +6,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.SwerveModduleTomer;
+import frc.robot.SwerveModuleTomer;
 
-public class CommandBuilder {
+import javax.imageio.metadata.IIOMetadataFormatImpl;
 
-	SwerveModduleTomer module;
+public class MoudleCommandBuilder {
 
-	public CommandBuilder(SwerveModduleTomer modula) {
-		module = modula;
+	SwerveModuleTomer module;
+
+	public MoudleCommandBuilder(SwerveModuleTomer modula) {
+		module = module;
 	}
 
 	public Command getFullCircleDrive() {
@@ -25,11 +27,11 @@ public class CommandBuilder {
 				new InstantCommand(module::fullCircleDrive,module).until(()->module.checkdegrees(Rotation2d.fromDegrees(360),module.getSteer()))),"FulleCircleDrive");
 	}
 
-	public Command getdriveDistance(Rotation2d angle, Rotation2d spins) {
-		return module.asSubsystemCommand(new InstantCommand(()->module.DriveDistanceCommand(angle,spins),module),"DriveAtCommand");
+	public Command getdriveAt(Rotation2d angle, Rotation2d target) {
+		return module.asSubsystemCommand(new InstantCommand(()->module.DriveDistanceCommand(angle,target),module),"DriveAtCommand angle = "+angle+ "target = " + target);
 	}
 
-	public Command getPowerDrive(double power) {
+	public Command setPowerDrive(double power) {
 		return module.asSubsystemCommand(new RunCommand(()->module.movepower(power),module),"PowerDrive");
 	}
 
@@ -47,7 +49,7 @@ public class CommandBuilder {
 
 	}
 	public Command getPowerdrivecommand(double power){
-		return module.asSubsystemCommand(new RunCommand(()->module.powerDriveCommand(power),module),"drivePower");
+		return module.asSubsystemCommand(new RunCommand(()->module.powerDriveCommand(power),module),"drivePower power = "+power);
 	}
 	public Command getModeSwitcher(NeutralModeValue value){
 		return module.asSubsystemCommand(new InstantCommand(()->module.mode_switcher(value),module),"ModeSwitch");
@@ -55,7 +57,7 @@ public class CommandBuilder {
 	public Command getTest(){
 		return module.asSubsystemCommand(new InstantCommand(module::testing1,module),"testing");
 	}
-	public Command getPosToZero(){
+	public Command setPosToZero(){
 		return module.asSubsystemCommand(new InstantCommand(module::posToZero,module),"posToZero");
 	}
 

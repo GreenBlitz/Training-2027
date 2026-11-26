@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
-import frc.robot.hardware.Tome_motor;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -41,7 +40,7 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
-	SwerveModduleTomer module = new SwerveModduleTomer(10, 11, 12.8,5.9028);
+	SwerveModuleTomer module = new SwerveModuleTomer(10, 11, 12.8,5.9028);
 
 
 	public Robot() {
@@ -138,7 +137,7 @@ public class Robot {
 	}
 
 
-	public SwerveModduleTomer getModule() {
+	public SwerveModuleTomer getModule() {
 		return module;
 	}
 

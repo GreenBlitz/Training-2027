@@ -1,10 +1,8 @@
 package frc.robot.hardware;
 
-import com.ctre.phoenix6.configs.SlotConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,26 +13,24 @@ import org.littletonrobotics.junction.Logger;
 
 import static com.ctre.phoenix6.BaseStatusSignal.getLatencyCompensatedValueAsDouble;
 
-public class Tome_motor {
+public class TomerMotor {
 
 	private final TalonFX motor;
-	private InvertedValue Clockwise_Positive = InvertedValue.Clockwise_Positive;
-	private InvertedValue Counter_Clockwise_Positive = null;
+	private InvertedValue clockwisePositive = InvertedValue.Clockwise_Positive;
+	private InvertedValue counterClockwise_Positive = null;
 	private PositionVoltage pid_thing = new PositionVoltage(0);
-	TalonFXConfiguration config = new TalonFXConfiguration();
+	private TalonFXConfiguration config = new TalonFXConfiguration();
 	public Double KP = 1.5;
+	public String path = "motor1";
 
-	public Tome_motor(int id,TalonFXConfiguration config) {
-		this.motor = new TalonFX(id, CANBus.roboRIO());
+
+	public TomerMotor(int id, TalonFXConfiguration config,CANBus canBus) {
+		this.motor = new TalonFX(id, canBus.roboRIO());
 		motor.getConfigurator().apply(config);
 		motor.optimizeBusUtilization(RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ);
-
-
 	}
 
-
-
-	public void move_half() {
+	public void motorMoveHalfSpeed() {
 		motor.set(0.5);
 	}
 
@@ -46,52 +42,50 @@ public class Tome_motor {
 		motor.stopMotor();
 	}
 
-	public String path = "motor1";
-
-	public double getacl() {
+	public double getAcelertion() {
 		StatusSignal acl = motor.getAcceleration();
 		return acl.getValueAsDouble();
 	}
 
-	public Rotation2d get_vel() {
+	public Rotation2d get_velocity() {
 		StatusSignal vel = motor.getVelocity();
 		double double_vel = (vel.getValueAsDouble() * 360);
 		return Rotation2d.fromDegrees(double_vel);
 	}
 
-	public Rotation2d get_pos() {
+	public Rotation2d getPosition() {
 		double rotations = getLatencyCompensatedValueAsDouble(motor.getPosition(), motor.getVelocity());
 		return Rotation2d.fromRotations(rotations);
 	}
 
-	public double get_vol() {
+	public double getVoltage() {
 		StatusSignal vol = motor.getMotorVoltage();
 		return vol.getValueAsDouble();
 	}
 
-	public double get_cur() {
+	public double getCurrent() {
 		StatusSignal current = motor.getStatorCurrent();
 		return current.getValueAsDouble();
 	}
 
 	public void logger() {
-		Logger.recordOutput(path + "/current", get_cur());
-		Logger.recordOutput(path + "/VOL", get_vol());
-		Logger.recordOutput(path + "/VEL", get_vel());
-		Logger.recordOutput(path + "/POSITION", get_pos());
-		Logger.recordOutput(path + "/ACL", getacl());
+		Logger.recordOutput(path + "/current", getCurrent());
+		Logger.recordOutput(path + "/VOL", getVoltage());
+		Logger.recordOutput(path + "/VEL", get_velocity());
+		Logger.recordOutput(path + "/POSITION", getPosition());
+		Logger.recordOutput(path + "/ACL", getAcelertion());
 		connected();
 	}
 
 	public void SwitchDierction() {
-		if (Clockwise_Positive == null) {
-			Counter_Clockwise_Positive = null;
-			Clockwise_Positive = InvertedValue.Clockwise_Positive;
+		if (clockwisePositive == null) {
+			counterClockwise_Positive = null;
+			clockwisePositive = InvertedValue.Clockwise_Positive;
 			config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 			motor.getConfigurator().apply(config);
-		} else if (Counter_Clockwise_Positive == null) {
-			Clockwise_Positive = null;
-			Counter_Clockwise_Positive = InvertedValue.CounterClockwise_Positive;
+		} else if (counterClockwise_Positive == null) {
+			clockwisePositive = null;
+			counterClockwise_Positive = InvertedValue.CounterClockwise_Positive;
 			config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 			motor.getConfigurator().apply(config);
 		}
@@ -140,13 +134,13 @@ public class Tome_motor {
 	}
 
 	public void MoveRotations(Rotation2d rotations){
-		double curent = get_pos().getRotations();
+		double curent = getPosition().getRotations();
 		motor.setControl(pid_thing.withPosition(curent+rotations.getRotations()));
 
 
 	}
 	public void movedegrees(Rotation2d degrees){
-		double curent = get_pos().getDegrees();
+		double curent = getPosition().getDegrees();
 		motor.setControl(pid_thing.withPosition(curent+degrees.getRotations()));
 
 

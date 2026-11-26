@@ -1,22 +1,21 @@
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.hardware.CommandBuilder;
-import frc.robot.hardware.Tome_motor;
+import frc.robot.hardware.MoudleCommandBuilder;
+import frc.robot.hardware.TomerMotor;
 import frc.robot.subsystems.GBSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BooleanSupplier;
 
-
-public class SwerveModduleTomer extends GBSubsystem {
-	public Tome_motor drive;
-	public Tome_motor steer;
+public class SwerveModuleTomer extends GBSubsystem {
+	public TomerMotor drive;
+	public TomerMotor steer;
 	TalonFXConfiguration driveConfig = new TalonFXConfiguration();
 	TalonFXConfiguration steerConfig = new TalonFXConfiguration();
 
@@ -24,7 +23,7 @@ public class SwerveModduleTomer extends GBSubsystem {
 	public String Path1;
 	public String Path2;
 
-	public SwerveModduleTomer(int id1, int id2, double steergearRation,double drivegearRatio) {
+	public SwerveModuleTomer(int id1, int id2, double steergearRation, double drivegearRatio) {
 		super();
 		steerConfig.Slot0.kP = 11;
 		steerConfig.Slot0.kD = 0.22;
@@ -34,13 +33,13 @@ public class SwerveModduleTomer extends GBSubsystem {
 		driveConfig.Slot0.kD = 0.22;
 		driveConfig.Slot0.kS = 0.28;
 		driveConfig.Feedback.SensorToMechanismRatio = drivegearRatio;
-		drive = new Tome_motor(id1,driveConfig);
-		steer = new Tome_motor(id2,steerConfig);
+		drive = new TomerMotor(id1,driveConfig,CANBus.roboRIO());
+		steer = new TomerMotor(id2,steerConfig, CANBus.roboRIO());
 		Path1 = ("drive1");
 		Path2 = ("steer1");
 	}
 
-	CommandBuilder commandBuilder = new CommandBuilder(this);
+	MoudleCommandBuilder MoudleCommandBuilder = new MoudleCommandBuilder(this);
 
 	public void SwitchDierctionswerve() {
 		steer.SwitchDierction();
@@ -66,11 +65,11 @@ public class SwerveModduleTomer extends GBSubsystem {
 		drive.move_half();
 	}
 
-	public Boolean checkdegrees(Rotation2d rotations, Tome_motor motor) {
-		return MathUtil.isNear(rotations.getDegrees(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+	public Boolean checkdegrees(Rotation2d rotations, TomerMotor motor) {
+		return MathUtil.isNear(rotations.getDegrees(), motor.getPosition().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
-	public Boolean checkRotations(Rotation2d rotations, Tome_motor motor) {
-		return MathUtil.isNear(rotations.getDegrees(), motor.get_pos().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
+	public Boolean checkRotations(Rotation2d rotations, TomerMotor motor) {
+		return MathUtil.isNear(rotations.getDegrees(), motor.getPosition().getRotations(), STEER_POSITION_TOLERANCE.getRotations());
 	}
 
 	public void manualDriving(double x, double y) {
@@ -93,13 +92,13 @@ public class SwerveModduleTomer extends GBSubsystem {
 
 	@Override
 	public void subsystemPeriodic() {
-		Logger.recordOutput(Path1 + "/velocity", drive.get_vel());
-		Logger.recordOutput(Path1 + "/driveVoltage", drive.get_vol());
-		Logger.recordOutput(Path1 + "/position", drive.get_pos());
+		Logger.recordOutput(Path1 + "/velocity", drive.get_velocity());
+		Logger.recordOutput(Path1 + "/driveVoltage", drive.getVoltage());
+		Logger.recordOutput(Path1 + "/position", drive.getPosition());
 		Logger.recordOutput(Path1 + "/isconnected", drive.isconnected());
-		Logger.recordOutput(Path2 + "/velocity", steer.get_vel());
-		Logger.recordOutput(Path2 + "/driveVoltage", steer.get_vol());
-		Logger.recordOutput(Path2 + "/position", steer.get_pos());
+		Logger.recordOutput(Path2 + "/velocity", steer.get_velocity());
+		Logger.recordOutput(Path2 + "/driveVoltage", steer.getVoltage());
+		Logger.recordOutput(Path2 + "/position", steer.getPosition());
 		Logger.recordOutput(Path2 + "/isconnected", steer.isconnected());
 	}
 
@@ -138,16 +137,16 @@ public class SwerveModduleTomer extends GBSubsystem {
 		return "ModulacurrentCommand";
 	}
 
-	public Tome_motor getDrive() {
+	public TomerMotor getDrive() {
 		return drive;
 	}
 
-	public Tome_motor getSteer() {
+	public TomerMotor getSteer() {
 		return steer;
 	}
 
-	public CommandBuilder getCommandBuilder() {
-		return commandBuilder;
+	public MoudleCommandBuilder getCommandBuilder() {
+		return MoudleCommandBuilder;
 	}
 
 	public void posToZero(){

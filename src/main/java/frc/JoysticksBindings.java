@@ -52,12 +52,12 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 
-		usedJoystick.A.onTrue(robot.getModule().getCommandBuilder().getdriveDistance(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
-		usedJoystick.B.whileTrue(robot.getModule().getCommandBuilder().getPowerDrive(0.9));
+		usedJoystick.A.onTrue(robot.getModule().getCommandBuilder().getdriveAt(Rotation2d.fromDegrees(90), Rotation2d.fromRotations(4)));
+		usedJoystick.B.whileTrue(robot.getModule().getCommandBuilder().setPowerDrive(0.9));
 		usedJoystick.Y.onTrue(robot.getModule().getCommandBuilder().getModeSwitcher(NeutralModeValue.Brake));
 		usedJoystick.X.onTrue(robot.getModule().getCommandBuilder().getModeSwitcher(NeutralModeValue.Brake));
 		usedJoystick.POV_DOWN.onTrue(robot.getModule().getCommandBuilder().getFullCircleDrive());
-		usedJoystick.POV_LEFT.onTrue(robot.getModule().getCommandBuilder().getPosToZero());
+		usedJoystick.POV_LEFT.onTrue(robot.getModule().getCommandBuilder().setPosToZero());
 		usedJoystick.POV_RIGHT.onTrue(robot.getModule().getCommandBuilder().getTest());
 		usedJoystick.POV_UP.onTrue(robot.getModule().getCommandBuilder().getRotationspid(Rotation2d.fromRotations(2.0)));
 		usedJoystick.L1.onTrue((robot.getModule().getCommandBuilder().getStopModule()));
