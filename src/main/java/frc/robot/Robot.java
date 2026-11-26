@@ -40,10 +40,11 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 	private final List<Limelight> limelights;
+	SwerveModuleTomer module = new SwerveModuleTomer(10, 11, 12.8,5.9028);
+
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
-
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
 			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
@@ -97,7 +98,6 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
-
 		updateSubsystems();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
@@ -135,5 +135,11 @@ public class Robot {
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
+
+
+	public SwerveModuleTomer getModule() {
+		return module;
+	}
+
 
 }

@@ -5,11 +5,11 @@ import org.littletonrobotics.junction.Logger;
 
 public abstract class GBSubsystem extends SubsystemBase {
 
-	private final String logPath;
+	private String logPath;
 	private Command currentCommand;
 	private boolean isRunningIndependently;
 
-	public GBSubsystem(String logPath) {
+	public GBSubsystem() {
 		this.logPath = logPath;
 		this.currentCommand = Commands.none().withName("None");
 	}

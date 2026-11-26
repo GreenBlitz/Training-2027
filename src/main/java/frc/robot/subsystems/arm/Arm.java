@@ -30,7 +30,7 @@ public class Arm extends GBSubsystem {
 		IFeedForwardRequest positionRequest,
 		double kG
 	) {
-		super(logPath);
+		super();
 		this.motor = motor;
 		this.signals = signals;
 		this.voltageRequest = voltageRequest;
