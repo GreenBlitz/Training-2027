@@ -30,7 +30,7 @@ class CANCoderEncoderBuilder {
 
 	static double getCANCoderOffset(int id) {
 		return switch (id) {
-			case 0 -> -0.285400390625;
+			case 0 -> 0.3310546875;
 			case 1 -> 0.072021484375;
 			case 2 -> -0.2646484375;
 			case 3 -> -0.259033203125;
@@ -50,7 +50,7 @@ class CANCoderEncoderBuilder {
 
 	static EncoderSignals buildSignals(CANCoderEncoder encoder) {
 		return new EncoderSignals(
-			Phoenix6SignalBuilder.build(
+			Phoenix6SignalBuilder.buildAngleSignal(
 				encoder.getDevice().getPosition(),
 				RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 				AngleUnit.ROTATIONS,
